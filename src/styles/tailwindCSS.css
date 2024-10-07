@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+        background-color: #000;
+}
+
+.text-pretty {
+        text-wrap: pretty;
+}
+
+.text-balance {
+        text-wrap: balance;
+}
+
+/* Estilos para evitar que el autocompletado del navegador sobrescriba los estilos */
+.custom-input:-webkit-autofill,
+.custom-input:-webkit-autofill:hover,
+.custom-input:-webkit-autofill:focus {
+        /* Color del texto */
+        -webkit-text-fill-color: white;
+        /* Fondo transparente */
+        background-color: transparent !important;
+        /* Fondo transparente */
+        box-shadow: 0 0 0px 1000px transparent inset !important;
+        /* Transición para el fondo */
+        transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Estilos para la selección de texto */
+.custom-input::selection {
+        background: rgba(255, 255, 255, 0.3);
+        /* Fondo de la selección */
+        color: white;
+        /* Color del texto de la selección */
+}
+
+.custom-input::-webkit-selection {
+        background: rgba(255, 255, 255, 0.3);
+        /* Fondo de la selección en WebKit */
+        color: white;
+        /* Color del texto de la selección en WebKit */
+}
+
+.custom-input::-moz-selection {
+        background: rgba(255, 255, 255, 0.3);
+        /* Fondo de la selección en Firefox */
+        color: white;
+        /* Color del texto de la selección en Firefox */
+}
+
+/* Estilos para el subrayado de errores ortográficos */
+.custom-input::spelling-error {
+        text-decoration: underline wavy red;
+        /* Subrayado ondulado rojo */
+        text-decoration-color: red;
+        /* Color del subrayado */
+}
+
+.custom-input::grammar-error {
+        text-decoration: underline wavy red;
+        /* Subrayado ondulado rojo */
+        text-decoration-color: red;
+        /* Color del subrayado */
+}
