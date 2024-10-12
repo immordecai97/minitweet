@@ -2,7 +2,6 @@
 import ContainerComp from '@components/ContainerComp.vue';
 </script>
 
-
 <template>
   <ContainerComp class="flex flex-col gap-6 max-w-xl">
     <ContainerComp tag="section" class="flex flex-col gap-4">

@@ -1,68 +1,31 @@
 <script setup>
-import { onMounted, ref } from 'vue';
-import { getPosts, createPost } from '@services/posts';
-import ContainerComp from '@/components/ContainerComp.vue';
-import ExpandableText from '@/components/ExpandableText.vue';
+import usePosts from '@composables/usePosts';
+import { onMounted } from 'vue';
 
-// ---------------------------------------------------------------------------- Variables reactivas
-// --> Aquí se crea una variable reactiva para guardar la lista de posts
-const postList = ref([]);
+const { posts, fetchPosts } = usePosts();
 
-// --> Aquí se crea una variable reactiva para guardar los datos del post
-const post = ref({
-        userData: {
-                displayName: '',
-                photoURL: null
-        },
-        title: '',
-        body: ''
-});
-const perfilPhotoDefault = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJQAAACUCAMAAABC4vDmAAAAMFBMVEXk5ueutLeor7Lf4ePn6eqrsbW5vsHIzM7a3d60ur3BxsjR1NbN0dPX2tzr7O29wsX2DjRMAAADaUlEQVR4nO2bW3LkIAwADYi3be5/25iZZB4bxyDZgqkt+ivZn+0SQgahTNNgMBgMBoPBYDAYDAaDwWCaAGBSG/mn3i53AFQMxt8xdpm6ewE466XU4getpZlVVy9YjHgKPcRE6Ke1KclfRnct2UkLprATpWe05g5W4PzfShmZVHOneGh0D1ZjK5j/yKZ3lpZLCPZ46R7Bcu2sKuN0i1Uzp1gXpxvN8qpeSQjTyMkgAiV0aJFWMGOctnrVpLZXJ/k3DRYQAi5Q2wJGdqkFqZThXj98oHKouK2wGZVhzqra78s/oXK8VobgxF2rHMVpY+WUipSU2goo5/pBoqTUtn6cZ+OV5sScVLTV4y0Kjhgp4fmOVajT3TuMUshTyxPG8kmr5xnGmnBCiu8C8b9JMS7fRyY6vSQwSi0fWDwn9YmfGaBKBUap1dOctGU8JVC3H29LaCGePHnvWKT104lVCgIpUMwXd1JR4KxSGcr+Y917NwhFXTIrTYQ7coNeHjhsVnFnVGZFtTyZL6IPFM7Js/YRfgBcWWduAz2sEN082e55prrPwV+iXii89T3i1NKp8tWhzWsDzqpxnDKlO6AW7J3q38BymFjSdHlvP3pu12LuYHRjdUHuaWlhew5xgApe6Fex7RffLUoPrWmxRkipM1KKNLv+IzjfuBjnuOTv3GcYAawvQN8Rqvy/K7dEG5L5Po4ak4KdF9dpvAtWtdhkvL5l02ue538RPoWoYG0oBpOKQUh9WNJz3pvZqSYRg9VZL3bL017B8iFyxwsmZ2uFniFLC2MpBYh7024VWt4yVQpQ9jiLDr1kYGhaHw+71WiJdHGTaosSMpP2kOnKWwTMlWfyAvq63ic4T+2//ta66L4M9iqju1Y6Xx+Kk5N4q9NTJhDP7bl9rZOZZS/Lple2S8UJJ+IYQhEt6ImF7EShoJasq1P8DeIjBGecMoRYAbeT0Ohsh8Cy797AdmjpT9gItEEtIL4vTULiPoTEx0YsGpHslLlJGr5eqs3iZRCN2tTKSVTPMNGnDwjoVPcgQX1SJ1pVherE7AhJqq6t3Wzr3amq67hHqvPImtMxceiVjimn+koaWT5DTaq3zahMcf2A8ucC5yhXdfqEG51UWrx23+InvphSLb97PxQz3cv2FN++VQeKyzcYDAaDwaA9XxcLKh2A6JUdAAAAAElFTkSuQmCC"
-
-// --> Aquí se crea una variable reactiva para controlar el estado del modal
-const openModal = ref(false);
-
-// ---------------------------------------------------------------------------- Funciones
-/**
- * Función para abrir y cerrar el modal
- */
-function toggleModal() {
-        openModal.value = !openModal.value;
-}
-
-
-/**
- * Función para crear un nuevo post
- */
-function handlerSubmit() {
-        createPost(post.value)
-        post.value = {
-                userData: {
-                        displayName: '',
-                        photoURL: null
-                },
-                title: '',
-                body: ''
-        };
-        toggleModal()
-}
-
-// ---------------------------------------------------------------------------- Funciones de ciclo de vida
-/**
- * Traemos los datos de la API y los guardamos a la variable postList
- */
 onMounted(async () => {
-        getPosts((posts) => postList.value = posts);
-})
-
-// ---------------------------------------------------------------------------- Watch
-// // Watch para observar cambios en el objeto post
-// watch(post, (newPost) => {
-//         console.log('Post updated:', newPost.title);
-// }, { deep: true });
+        await fetchPosts();
+});
 </script>
 
 <template>
+        <h1>feed</h1>
+        <template v-if="posts.value && posts.value.length">
+                <ul>
+                        <li v-for="post in posts.value" :key="post.uid">
+                                {{ post.body }}
+                        </li>
+                </ul>
+        </template>
+        <div v-else>
+                <p>No posts available.</p>
+        </div>
+</template>
+
+
+
+<!-- <template>
         <ContainerComp class="flex-1 flex flex-col">
                 <ContainerComp class="flex-1 flex flex-col gap-4">
                         <ContainerComp tag="h1" text="Feed" class="text-3xl font-bold text-center" />
@@ -120,4 +83,4 @@ onMounted(async () => {
                         </ContainerComp>
                 </div>
         </Teleport>
-</template>
+</template> -->

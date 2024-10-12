@@ -1,19 +1,35 @@
 <script setup>
-import { ref } from 'vue';
-import { loginUser } from '@services/auth.js';
-import { RouterLink, useRouter } from 'vue-router'
-import ContainerComp from '@/components/ContainerComp.vue';
+import ContainerComp from '@components/ContainerComp.vue';
+import { onMounted, onUnmounted, ref } from 'vue';
+import useAuth from '@composables/useAuth';
+import { RouterLink, useRouter } from 'vue-router';
+
 const router = useRouter();
 const user = ref({
         email: '',
         password: ''
 });
+const { login, initAuth, cleanupAuth } = useAuth();
 
-function handlerSubmit() {
-        loginUser({ ...user.value }).then(() => {
+onMounted(async () => {
+        await initAuth();
+        if (user.value) {
                 router.push({ name: 'Feed' });
-                user.value = { email: '', password: '' };
-        });
+        }
+})
+
+onUnmounted(() => {
+        cleanupAuth();
+})
+
+async function handlerSubmit() {
+        try {
+                const { email, password } = user.value;
+                await login({ email, password });
+                router.push({ name: 'Feed' });
+        } catch (error) {
+                console.log(error);
+        }
 }
 </script>
 

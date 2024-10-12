@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { getUserFromDB } from '@services/auth';
-import { updateUser } from '@services/myAccount';
+import { updateUser } from '@/services/Account';
 import { useRouter } from 'vue-router';
 import ContainerComp from '@/components/ContainerComp.vue';
 

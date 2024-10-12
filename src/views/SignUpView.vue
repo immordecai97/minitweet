@@ -1,27 +1,21 @@
 <script setup>
-import { ref } from 'vue';
-import { createUser } from '@services/auth.js';
 import ContainerComp from '@/components/ContainerComp.vue';
-import { useRouter } from 'vue-router';
+import { ref } from 'vue';
+import useAuth from '@composables/useAuth';
+import { RouterLink, useRouter } from 'vue-router';
 
 const router = useRouter();
-
-const user = ref({
-        displayName: '',
+const userData = ref({
+        name: '',
         username: '',
         email: '',
         password: ''
-});
+})
+const { register } = useAuth();
 
 async function handlerSubmit() {
         try {
-                await createUser({ ...user.value })
-                user.value = {
-                        displayName: '',
-                        username: '',
-                        email: '',
-                        password: ''
-                }
+                await register({ ...userData.value });
                 router.push({ name: 'Feed' });
         } catch (error) {
                 console.error(error);
@@ -30,7 +24,6 @@ async function handlerSubmit() {
 </script>
 
 <template>
-
         <ContainerComp class="flex-1 flex flex-col justify-center items-center">
                 <ContainerComp class="flex flex-col gap-6 max-w-96">
                         <ContainerComp tag="h1" text="Registrarse" class="text-3xl font-bold text-center" />
@@ -38,7 +31,7 @@ async function handlerSubmit() {
                                 <ContainerComp class="flex flex-col gap-4 items-center">
                                         <ContainerComp>
                                                 <label for="name" class="hidden">Nombre</label>
-                                                <input v-model="user.displayName" type="text" id="name" name="name"
+                                                <input v-model="userData.name" type="text" id="name" name="name"
                                                         placeholder="name"
                                                         class="w-full p-2 bg-transparent border-b focus:outline-none focus:border-blue-600 custom-input"
                                                         required>
@@ -46,15 +39,15 @@ async function handlerSubmit() {
 
                                         <ContainerComp>
                                                 <label for="username" class="hidden">Username</label>
-                                                <input v-model="user.username" type="text" id="username" name="username"
-                                                        placeholder="Username"
+                                                <input v-model="userData.username" type="text" id="username"
+                                                        name="username" placeholder="Username"
                                                         class="w-full p-2 bg-transparent border-b focus:outline-none focus:border-blue-600 custom-input"
                                                         required>
                                         </ContainerComp>
 
                                         <ContainerComp>
                                                 <label for="email" class="hidden">Email</label>
-                                                <input v-model="user.email" type="email" id="email" name="email"
+                                                <input v-model="userData.email" type="email" id="email" name="email"
                                                         placeholder="Email"
                                                         class="w-full p-2 bg-transparent border-b focus:outline-none focus:border-blue-600 custom-input"
                                                         required>
@@ -62,7 +55,7 @@ async function handlerSubmit() {
 
                                         <ContainerComp>
                                                 <label for="password" class="hidden">Password</label>
-                                                <input v-model="user.password" type="password" id="password"
+                                                <input v-model="userData.password" type="password" id="password"
                                                         name="password" placeholder="Password"
                                                         class="w-full p-2 bg-transparent border-b focus:outline-none focus:border-blue-600 custom-input"
                                                         required>
