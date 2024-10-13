@@ -47,11 +47,11 @@ onMounted(async () => {
                                     :src="post?.user?.photoURL || perfilPhotoDefault">
                             </figure>
                             <h3 class="font-bold flex-1">
-                                <router-link :to="{ name: 'AccountDetail', params: { id: post.user.uid } }" class="transition hover:underline hover:text-blue-700">
+                                <router-link :to="{ name: 'AccountDetail', params: { id: post.user.uid } }">
                                     {{ post?.user?.name }}
                                 </router-link>
                                 <span class="text-gray-600">
-                                    @<router-link :to="{ name: 'AccountDetail', params: { id: post.user.uid } }" class="transition hover:underline hover:text-blue-700">
+                                    @<router-link :to="{ name: 'AccountDetail', params: { id: post.user.uid } }">
                                         {{ post?.user?.username }}
                                     </router-link>
                                 </span>
@@ -63,6 +63,9 @@ onMounted(async () => {
                         </section>
                     </ContainerComp>
                 </ContainerComp>
+            </ContainerComp>
+            <ContainerComp v-else class="text-center text-gray-400 text-opacity-50 my-24">
+                Aún no hay publicaciones...
             </ContainerComp>
         </ContainerComp>
     </ContainerComp>
