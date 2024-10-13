@@ -8,6 +8,7 @@ const router = createRouter({
     { path: '/', name: 'About', component: AboutView },
     { path: '/feed', name: 'Feed', component: () => import('../views/FeedView.vue'), meta: { requiresAuth: true } },
     { path: '/account', name: 'Account', component: () => import('../views/AccountView.vue'), meta: { requiresAuth: true } },
+    { path: '/account/:id', name: 'AccountDetail', component: () => import('../views/AccountView.vue'), meta: { requiresAuth: true } },
     { path: '/account/edit', name: 'EditAccount', component: () => import('../views/EditAccountView.vue'), meta: { requiresAuth: true } },
     { path: '/login', name: 'Login', component: () => import('../views/LoginView.vue') },
     { path: '/signup', name: 'Signup', component: () => import('../views/SignUpView.vue') },

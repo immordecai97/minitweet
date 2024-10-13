@@ -18,11 +18,12 @@ export const createPost = async ({ userID, title, body }) => {
 };
 
 export const getPostsByUser = async (userId) => {
-    const q = query(postsCollection, where('userId', '==', userId));
+    const q = query(postsCollection, where('userID', '==', userId), orderBy('create_at', 'desc'));
     const querySnapshot = await getDocs(q);
     const posts = [];
     querySnapshot.forEach((doc) => {
-        posts.push({ id: doc.id, ...doc.data() });
+        posts.push({ ...doc.data() });
+        // posts.push({ id: doc.id, ...doc.data() });
     });
     return posts;
 };

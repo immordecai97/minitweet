@@ -30,8 +30,7 @@ async function handlerSubmit() {
 }
 
 onMounted(async () => {
-    await fetchPosts();
-    console.log(posts.value);
+    fetchPosts();
 });
 </script>
 
@@ -41,16 +40,22 @@ onMounted(async () => {
             <ContainerComp tag="h1" text="Feed" class="text-3xl font-bold text-center" />
             <ContainerComp tag="ul" v-if="posts && posts.length" class="flex-1 flex flex-col gap-4 pb-12 overflow-auto">
                 <ContainerComp tag="li" v-for="post in posts" :key="post.id">
-                    {{ console.log(post) }}
                     <ContainerComp tag="article" class="bg-transparent w-full border-b border-gray-800 pb-4 max-w-96">
                         <header class="flex gap-2 items-start">
                             <figure class="w-10 h-10">
                                 <img alt="user photo" class="aspect-w-1 rounded-full"
                                     :src="post?.user?.photoURL || perfilPhotoDefault">
                             </figure>
-                            <h3 class="font-bold flex-1">{{
-                                post?.user?.name }} <span class="text-gray-600">@{{
-                                    post?.user?.username }}</span></h3>
+                            <h3 class="font-bold flex-1">
+                                <router-link :to="{ name: 'AccountDetail', params: { id: post.user.uid } }" class="transition hover:underline hover:text-blue-700">
+                                    {{ post?.user?.name }}
+                                </router-link>
+                                <span class="text-gray-600">
+                                    @<router-link :to="{ name: 'AccountDetail', params: { id: post.user.uid } }" class="transition hover:underline hover:text-blue-700">
+                                        {{ post?.user?.username }}
+                                    </router-link>
+                                </span>
+                            </h3>
                         </header>
                         <section class="pl-12 -mt-5">
                             <h2 v-if="post?.title" class="font-bold break-words whitespace-normal">{{ post.title }}</h2>
