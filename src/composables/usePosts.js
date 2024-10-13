@@ -1,12 +1,16 @@
 // composables/usePosts.js
 import { ref } from 'vue';
 import { createPost, getAllPosts, getPostById, getPostsByUser } from '@services/posts';
+import useAuth from '@composables/useAuth';
 
+
+const { fetchUserById } = useAuth();
 const posts = ref([]);
 
 const usePosts = () => {
-    const addPost = async (userId, postContent) => {
-        await createPost(userId, postContent);
+    const addPost = async (postContent) => {
+        await createPost({ ...postContent });
+        await fetchPosts();
     };
 
     const fetchPostsByUserId = async (userId) => {
@@ -18,7 +22,13 @@ const usePosts = () => {
     };
 
     const fetchPosts = async () => {
-        posts.value = await getAllPosts();
+        const allPosts = await getAllPosts();
+        const userPromises = allPosts.map(async (post) => {
+            const user = await fetchUserById(post.userID);
+            const postToShow = { ...post, user };
+            return postToShow;
+        });
+        posts.value = await Promise.all(userPromises);
     };
 
     return {

@@ -2,15 +2,15 @@
 
 import useAuth from '@/composables/useAuth';
 import { onMounted, onUnmounted } from 'vue';
-import { RouterLink, useRouter } from 'vue-router';
+import { RouterLink } from 'vue-router';
 
-const router = useRouter();
-const { user, logout, initAuth, cleanupAuth } = useAuth();
+// const router = useRouter();
+const { user, initAuth, cleanupAuth } = useAuth();
 
-function handlerLogoutUser() {
-        logout();
-        router.push({ name: 'About' });
-}
+// function handlerLogoutUser() {
+//         logout();
+//         router.push({ name: 'About' });
+// }
 
 onMounted(() => {
         if (!user.value) {
@@ -38,11 +38,11 @@ onUnmounted(() => {
                                                 class="transition duration-300 ease-in-out transform hover:scale-110 hover:underline">
                                                 Cuenta</RouterLink>
                                 </li>
-                                <li>
+                                <!-- <li>
                                         <button @click="handlerLogoutUser"
                                                 class="transition duration-300 ease-in-out transform hover:scale-110 hover:underline">
                                                 Cerrar sesión</button>
-                                </li>
+                                </li> -->
                         </template>
                         <template v-else>
                                 <li>

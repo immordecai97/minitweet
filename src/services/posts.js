@@ -1,15 +1,15 @@
 // services/posts.js
 import { db } from '@services/firebase';
-import { collection, addDoc, getDocs, query, where, serverTimestamp, getDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, query, where, serverTimestamp, getDoc, doc, addDoc, orderBy } from 'firebase/firestore';
 const postsCollection = collection(db, 'posts');
 
-
-export const createPost = async (userId, postContent) => {
+export const createPost = async ({ userID, title, body }) => {
     try {
         const docRef = await addDoc(postsCollection, {
-            userId,
-            content: postContent,
-            timestamp: serverTimestamp()
+            userID,
+            title,
+            body,
+            create_at: serverTimestamp()
         });
         console.log("Document written with ID: ", docRef.id);
     } catch (error) {
@@ -18,7 +18,7 @@ export const createPost = async (userId, postContent) => {
 };
 
 export const getPostsByUser = async (userId) => {
-    const q = query(collection(db, 'posts'), where('userId', '==', userId));
+    const q = query(postsCollection, where('userId', '==', userId));
     const querySnapshot = await getDocs(q);
     const posts = [];
     querySnapshot.forEach((doc) => {
@@ -28,13 +28,15 @@ export const getPostsByUser = async (userId) => {
 };
 
 export const getAllPosts = async () => {
-    const querySnapshot = await getDocs(collection(db, 'posts'));
+    // Crea una consulta que ordena los documentos por el campo 'create_at' en orden descendente
+    const q = query(postsCollection, orderBy('create_at', 'desc'));
+    const querySnapshot = await getDocs(q);
     const posts = [];
     querySnapshot.forEach((doc) => {
         posts.push({ id: doc.id, ...doc.data() });
     });
     return posts;
-}
+};
 
 export const getPostById = async (postId) => {
     const docRef = await getDoc(doc(db, 'posts', postId));

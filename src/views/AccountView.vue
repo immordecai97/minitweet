@@ -32,17 +32,17 @@ onUnmounted(() => {
                                         <img :src="user?.coverPhotoURL || 'https://placehold.co/1600x900'"
                                                 alt="User cover photo" class="w-full">
                                 </ContainerComp>
-                                <ContainerComp class="max-w-96 flex justify-between items-end -mt-8">
+                                <ContainerComp class="max-w-96 flex justify-between items-end -mt-10 xs:-mt-8">
                                         <figure class="w-20 h-20 ml-2 ">
                                                 <img :src="user?.photoURL || perfilPhotoDefault" alt="User cover photo"
                                                         class="aspect-w-1 rounded-full border-4 border-black">
                                         </figure>
                                         <div class="flex gap-2">
                                                 <router-link to="/account/edit"
-                                                        class="px-4 py-2 border rounded-lg text-center">Editar
+                                                        class="inline-flex items-center px-2 py-1 xs:px-4 xs:py-2 border rounded-lg text-center text-xs xs:text-base">Editar
                                                         perfil</router-link>
                                                 <button @click="handlerLogoutUser"
-                                                        class="px-4 py-2 border rounded-lg text-center">Cerrar
+                                                        class="inline-flex items-center px-2 py-1 xs:px-4 xs:py-2 border rounded-lg text-center text-xs xs:text-base">Cerrar
                                                         sesión</button>
                                         </div>
                                 </ContainerComp>
@@ -52,7 +52,7 @@ onUnmounted(() => {
                                         <ContainerComp class="flex flex-col items-center">
                                                 <ContainerComp tag="h2" :text="`#${user?.uid}`"
                                                         class="text-gray-500 text-opacity-80 text-xs" />
-                                                <ContainerComp tag="h2" :text="user?.displayName"
+                                                <ContainerComp tag="h2" :text="user?.name"
                                                         class="font-bold text-base" />
                                         </ContainerComp>
                                         <ContainerComp tag="p" :text="`Mail: ${user?.email}`" class="text-gray-600" />

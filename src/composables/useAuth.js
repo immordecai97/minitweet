@@ -48,21 +48,22 @@ const useAuth = () => {
         }
     };
 
-    const fetchUserData = async (userId) => {
+    const fetchUserById = async (userId) => {
         try {
             const userDoc = await getDoc(doc(db, 'usersProfiles', userId));
             if (userDoc.exists()) {
-                // user.value = { ...user.value, ...userDoc.data() };
-                user.value = {...userDoc.data() };
+                // user.value = { ...userDoc.data() };
+                return userDoc.data();
             }
         } catch (error) {
             console.error("Error fetching user data: ", error.message);
         }
     };
 
-    const updateUser = async (userId, updatedData) => {
+
+    const updateUser = async (updatedData) => {
         try {
-            await updateDoc(doc(db, 'users', userId), updatedData);
+            await updateDoc(doc(db, 'usersProfiles', updatedData.uid), updatedData);
             // Actualizar el estado local del usuario
             user.value = { ...user.value, ...updatedData };
         } catch (error) {
@@ -70,26 +71,14 @@ const useAuth = () => {
         }
     };
 
-    const getUserById = async (userId) => {
-        try {
-            const userDoc = await getDoc(doc(db, 'usersProfiles', userId));
-            if (userDoc.exists()) {
-                return userDoc.data();
-            } else {
-                throw new Error("User not found");
-            }
-        } catch (error) {
-            console.error("Error fetching user by ID: ", error.message);
-            throw error;
-        }
-    };
 
     const initAuth = async () => {
         return new Promise((resolve) => {
             unsubscribe.value = onAuthStateChanged(auth, async (currentUser) => {
                 if (currentUser) {
-                    user.value = currentUser;
-                    await fetchUserData(currentUser.uid);
+                    // user.value = currentUser;
+                    // await fetchUserData(currentUser.uid);
+                    user.value = await fetchUserById(currentUser.uid);
                 } else {
                     user.value = null;
                 }
@@ -104,7 +93,7 @@ const useAuth = () => {
         }
     };
 
-    return { user, login, register, logout, updateUser, getUserById, initAuth, cleanupAuth };
+    return { user, login, register, logout, updateUser, fetchUserById, initAuth, cleanupAuth };
 };
 
 export default useAuth;
