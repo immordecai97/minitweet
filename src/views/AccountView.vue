@@ -55,10 +55,10 @@ onUnmounted(() => {
                                         </figure>
                                         <div class="flex gap-2" v-if="isOwnAccount">
                                                 <router-link to="/account/edit"
-                                                        class="inline-flex items-center px-2 py-1 xs:px-4 xs:py-2 border rounded-lg text-center text-xs xs:text-base">Editar
+                                                        class="inline-flex items-center px-2 py-1 xs:px-4 xs:py-2 border rounded-lg text-center text-xs xs:text-base transition hover:bg-white hover:text-black">Editar
                                                         perfil</router-link>
                                                 <button @click="handlerLogoutUser"
-                                                        class="inline-flex items-center px-2 py-1 xs:px-4 xs:py-2 border rounded-lg text-center text-xs xs:text-base">Cerrar
+                                                        class="inline-flex items-center px-2 py-1 xs:px-4 xs:py-2 border rounded-lg text-center text-xs xs:text-base transition hover:bg-white hover:text-black">Cerrar
                                                         sesión</button>
                                         </div>
                                 </ContainerComp>

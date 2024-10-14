@@ -43,15 +43,18 @@ onMounted(async () => {
                     <ContainerComp tag="article" class="bg-transparent w-full border-b border-gray-800 pb-4 max-w-96">
                         <header class="flex gap-2 items-start">
                             <figure class="w-10 h-10">
-                                <img alt="user photo" class="aspect-w-1 rounded-full"
-                                    :src="post?.user?.photoURL || perfilPhotoDefault">
-                            </figure>
-                            <h3 class="font-bold flex-1">
                                 <router-link :to="{ name: 'AccountDetail', params: { id: post.user.uid } }">
+                                    <img alt="user photo" class="aspect-w-1 rounded-full transition border-2 hover:border-blue-700"
+                                        :src="post?.user?.photoURL || perfilPhotoDefault">
+                                </router-link>
+                            </figure>
+
+                            <h3 class="font-bold flex-1">
+                                <router-link :to="{ name: 'AccountDetail', params: { id: post.user.uid } }" class=" transition hover:text-blue-700">
                                     {{ post?.user?.name }}
                                 </router-link>
-                                <span class="text-gray-600">
-                                    @<router-link :to="{ name: 'AccountDetail', params: { id: post.user.uid } }">
+                                <span class="text-gray-600 ">
+                                    @<router-link :to="{ name: 'AccountDetail', params: { id: post.user.uid } }" class="transition hover:text-blue-700">
                                         {{ post?.user?.username }}
                                     </router-link>
                                 </span>
@@ -71,7 +74,7 @@ onMounted(async () => {
     </ContainerComp>
     <ContainerComp class="fixed bottom-[70px]">
         <ContainerComp class="max-w-96 flex justify-end pr-3 xs:pr-0">
-            <button @click="toggleModal" class="bg-white text-black px-4 py-2 rounded-lg">Publicar</button>
+            <button @click="toggleModal" class="bg-white text-black px-4 py-2 rounded-lg transition border border-transparent hover:bg-black hover:border-white hover:text-white">Publicar</button>
         </ContainerComp>
     </ContainerComp>
 

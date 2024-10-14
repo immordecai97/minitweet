@@ -53,10 +53,10 @@ import ContainerComp from '@components/ContainerComp.vue';
       </p>
       <ContainerComp class="flex flex-col gap-4 items-center">
         <router-link to="/login"
-          class="transition bg-slate-50 text-black font-bold py-2 px-4 rounded-lg w-full max-w-96 text-center">Iniciar
+          class="transition bg-slate-50 text-black font-bold py-2 px-4 rounded-lg w-full max-w-96 text-center border border-transparent hover:bg-black hover:text-white hover:border-white">Iniciar
           sesión</router-link>
         <router-link to="/signup"
-          class="transition bg-slate-50 text-black font-bold py-2 px-4 rounded-lg w-full max-w-96 text-center">Registrase</router-link>
+          class="transition bg-slate-50 text-black font-bold py-2 px-4 rounded-lg w-full max-w-96 text-center border border-transparent hover:bg-black hover:text-white hover:border-white">Registrase</router-link>
       </ContainerComp>
     </ContainerComp>
   </ContainerComp>
