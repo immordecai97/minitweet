@@ -56,7 +56,7 @@ import ContainerComp from '@components/ContainerComp.vue';
           class="transition bg-slate-50 text-black font-bold py-2 px-4 rounded-lg w-full max-w-96 text-center border border-transparent hover:bg-black hover:text-white hover:border-white">Iniciar
           sesión</router-link>
         <router-link to="/signup"
-          class="transition bg-slate-50 text-black font-bold py-2 px-4 rounded-lg w-full max-w-96 text-center border border-transparent hover:bg-black hover:text-white hover:border-white">Registrase</router-link>
+          class="transition bg-slate-50 text-black font-bold py-2 px-4 rounded-lg w-full max-w-96 text-center border border-transparent hover:bg-black hover:text-white hover:border-white">Registrarse</router-link>
       </ContainerComp>
     </ContainerComp>
   </ContainerComp>

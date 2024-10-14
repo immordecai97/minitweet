@@ -4,6 +4,8 @@ import ExpandableText from '@components/ExpandableText.vue';
 import usePosts from '@composables/usePosts';
 import useAuth from '@composables/useAuth';
 import { onMounted, ref } from 'vue';
+import { formatDistanceToNow } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 const { user } = useAuth();
 const { posts, fetchPosts, addPost } = usePosts();
@@ -29,6 +31,10 @@ async function handlerSubmit() {
     };
 }
 
+function convertTimestampToDate(timestamp) {
+    return new Date(timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000);
+}
+
 onMounted(async () => {
     fetchPosts();
 });
@@ -44,17 +50,20 @@ onMounted(async () => {
                         <header class="flex gap-2 items-start">
                             <figure class="w-10 h-10">
                                 <router-link :to="{ name: 'AccountDetail', params: { id: post.user.uid } }">
-                                    <img alt="user photo" class="aspect-w-1 rounded-full transition border-2 hover:border-blue-700"
+                                    <img alt="user photo"
+                                        class="aspect-w-1 rounded-full transition border-2 hover:border-blue-700"
                                         :src="post?.user?.photoURL || perfilPhotoDefault">
                                 </router-link>
                             </figure>
 
                             <h3 class="font-bold flex-1">
-                                <router-link :to="{ name: 'AccountDetail', params: { id: post.user.uid } }" class=" transition hover:text-blue-700">
+                                <router-link :to="{ name: 'AccountDetail', params: { id: post.user.uid } }"
+                                    class=" transition hover:text-blue-700">
                                     {{ post?.user?.name }}
                                 </router-link>
                                 <span class="text-gray-600 ">
-                                    @<router-link :to="{ name: 'AccountDetail', params: { id: post.user.uid } }" class="transition hover:text-blue-700">
+                                    @<router-link :to="{ name: 'AccountDetail', params: { id: post.user.uid } }"
+                                        class="transition hover:text-blue-700">
                                         {{ post?.user?.username }}
                                     </router-link>
                                 </span>
@@ -63,6 +72,13 @@ onMounted(async () => {
                         <section class="pl-12 -mt-5">
                             <h2 v-if="post?.title" class="font-bold break-words whitespace-normal">{{ post.title }}</h2>
                             <ExpandableText :text="post.body" />
+                            <ContainerComp class="flex justify-end">
+                                <p class="text-xs text-gray-500 -mb-3">
+                                    {{ formatDistanceToNow(convertTimestampToDate(post.create_at), {
+                                        addSuffix: true,
+                                    locale: es }) }}
+                                </p>
+                            </ContainerComp>
                         </section>
                     </ContainerComp>
                 </ContainerComp>
@@ -74,7 +90,8 @@ onMounted(async () => {
     </ContainerComp>
     <ContainerComp class="fixed bottom-[70px]">
         <ContainerComp class="max-w-96 flex justify-end pr-3 xs:pr-0">
-            <button @click="toggleModal" class="bg-white text-black px-4 py-2 rounded-lg transition border border-transparent hover:bg-black hover:border-white hover:text-white">Publicar</button>
+            <button @click="toggleModal"
+                class="bg-white text-black px-4 py-2 rounded-lg transition border border-transparent hover:bg-black hover:border-white hover:text-white">Publicar</button>
         </ContainerComp>
     </ContainerComp>
 
