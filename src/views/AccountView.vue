@@ -5,6 +5,8 @@ import useAuth from '@/composables/useAuth';
 import usePosts from '@/composables/usePosts';
 import { onMounted, onUnmounted, ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
+import { formatDistanceToNow } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 const perfilPhotoDefault = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJQAAACUCAMAAABC4vDmAAAAMFBMVEXk5ueutLeor7Lf4ePn6eqrsbW5vsHIzM7a3d60ur3BxsjR1NbN0dPX2tzr7O29wsX2DjRMAAADaUlEQVR4nO2bW3LkIAwADYi3be5/25iZZB4bxyDZgqkt+ivZn+0SQgahTNNgMBgMBoPBYDAYDAaDwWCaAGBSG/mn3i53AFQMxt8xdpm6ewE466XU4getpZlVVy9YjHgKPcRE6Ke1KclfRnct2UkLprATpWe05g5W4PzfShmZVHOneGh0D1ZjK5j/yKZ3lpZLCPZ46R7Bcu2sKuN0i1Uzp1gXpxvN8qpeSQjTyMkgAiV0aJFWMGOctnrVpLZXJ/k3DRYQAi5Q2wJGdqkFqZThXj98oHKouK2wGZVhzqra78s/oXK8VobgxF2rHMVpY+WUipSU2goo5/pBoqTUtn6cZ+OV5sScVLTV4y0Kjhgp4fmOVajT3TuMUshTyxPG8kmr5xnGmnBCiu8C8b9JMS7fRyY6vSQwSi0fWDwn9YmfGaBKBUap1dOctGU8JVC3H29LaCGePHnvWKT104lVCgIpUMwXd1JR4KxSGcr+Y917NwhFXTIrTYQ7coNeHjhsVnFnVGZFtTyZL6IPFM7Js/YRfgBcWWduAz2sEN082e55prrPwV+iXii89T3i1NKp8tWhzWsDzqpxnDKlO6AW7J3q38BymFjSdHlvP3pu12LuYHRjdUHuaWlhew5xgApe6Fex7RffLUoPrWmxRkipM1KKNLv+IzjfuBjnuOTv3GcYAawvQN8Rqvy/K7dEG5L5Po4ak4KdF9dpvAtWtdhkvL5l02ue538RPoWoYG0oBpOKQUh9WNJz3pvZqSYRg9VZL3bL017B8iFyxwsmZ2uFniFLC2MpBYh7024VWt4yVQpQ9jiLDr1kYGhaHw+71WiJdHGTaosSMpP2kOnKWwTMlWfyAvq63ic4T+2//ta66L4M9iqju1Y6Xx+Kk5N4q9NTJhDP7bl9rZOZZS/Lple2S8UJJ+IYQhEt6ImF7EShoJasq1P8DeIjBGecMoRYAbeT0Ohsh8Cy797AdmjpT9gItEEtIL4vTULiPoTEx0YsGpHslLlJGr5eqs3iZRCN2tTKSVTPMNGnDwjoVPcgQX1SJ1pVherE7AhJqq6t3Wzr3amq67hHqvPImtMxceiVjimn+koaWT5DTaq3zahMcf2A8ucC5yhXdfqEG51UWrx23+InvphSLb97PxQz3cv2FN++VQeKyzcYDAaDwaA9XxcLKh2A6JUdAAAAAElFTkSuQmCC"
 const router = useRouter();
@@ -17,6 +19,10 @@ const isOwnAccount = ref(true);
 function handlerLogoutUser() {
         logout();
         router.push({ name: 'Login' });
+}
+
+function convertTimestampToDate(timestamp) {
+        return new Date(timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000);
 }
 
 onMounted(async () => {
@@ -72,7 +78,7 @@ onUnmounted(() => {
                                                         <ContainerComp tag="h2" class="font-bold text-base">
                                                                 {{ viewedUser?.name }} <span
                                                                         class="font-normal text-gray-600 text-sm">@{{
-                                                                        viewedUser?.username }}</span>
+                                                                                viewedUser?.username }}</span>
                                                         </ContainerComp>
                                                 </ContainerComp>
                                         </ContainerComp>
@@ -104,13 +110,22 @@ onUnmounted(() => {
                                                                 <h3 class="font-bold flex-1">{{
                                                                         post?.user?.name }} <span
                                                                                 class="text-gray-600">@{{
-                                                                                post?.user?.username }}</span></h3>
+                                                                                        post?.user?.username }}</span></h3>
                                                         </header>
                                                         <section class="pl-12 -mt-5">
                                                                 <h2 v-if="post?.title"
                                                                         class="font-bold break-words whitespace-normal">
                                                                         {{ post.title }}</h2>
                                                                 <ExpandableText :text="post.body" />
+                                                                <ContainerComp class="flex justify-end">
+                                                                        <p class="text-xs text-gray-500 -mb-3">
+                                                                                {{
+                                                                                        formatDistanceToNow(convertTimestampToDate(post.create_at),
+                                                                                {
+                                                                                addSuffix: true,
+                                                                                locale: es }) }}
+                                                                        </p>
+                                                                </ContainerComp>
                                                         </section>
                                                 </ContainerComp>
                                         </ContainerComp>
