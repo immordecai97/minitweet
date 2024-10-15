@@ -28,7 +28,6 @@ async function handlerSubmit() {
 
 onMounted(async () => {
         await initAuth();
-        console.log('user', user.value);
 });
 
 onUnmounted(() => {

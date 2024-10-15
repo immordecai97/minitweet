@@ -1,12 +1,17 @@
 import { ref } from 'vue';
-import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
 import { auth, db } from '@services/firebase';
 import { doc, setDoc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
 
 const user = ref(null);
 const unsubscribe = ref(null);
 
 const useAuth = () => {
+
+    /**
+     * Función para iniciar sesión
+     * @param {{email: String, password: String}} param0 
+     */
     const login = async ({ email, password }) => {
         try {
             await signInWithEmailAndPassword(auth, email, password);
@@ -15,6 +20,10 @@ const useAuth = () => {
         }
     };
 
+    /**
+     * Función para registrar un nuevo usuario
+     * @param {{name: String, username: String, email: String, password: String}} param0 
+     */
     const register = async ({ name, username, email, password }) => {
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -40,6 +49,9 @@ const useAuth = () => {
         }
     };
 
+    /**
+     * Función para cerrar sesión
+     */
     const logout = async () => {
         try {
             await signOut(auth);
@@ -48,11 +60,16 @@ const useAuth = () => {
         }
     };
 
+    /**
+     * Función para obtener los datos de un usuario por su ID
+     * Retorna un objeto con los datos del usuario
+     * @param {String} userId 
+     * @returns {Object}
+     */
     const fetchUserById = async (userId) => {
         try {
             const userDoc = await getDoc(doc(db, 'usersProfiles', userId));
             if (userDoc.exists()) {
-                // user.value = { ...userDoc.data() };
                 return userDoc.data();
             }
         } catch (error) {
@@ -60,33 +77,45 @@ const useAuth = () => {
         }
     };
 
-
+    /**
+     * Función para actualizar los datos de un usuario
+     * @param {Object} updatedData 
+     */
     const updateUser = async (updatedData) => {
         try {
             await updateDoc(doc(db, 'usersProfiles', updatedData.uid), updatedData);
-            // Actualizar el estado local del usuario
             user.value = { ...user.value, ...updatedData };
         } catch (error) {
             console.error("Error updating user data: ", error.message);
         }
     };
 
-
+    /**
+     * Función para inicializar la autenticación
+     * Retorna una promesa que se resuelve cuando se ha inicializado la autenticación
+     * @returns {Promise}
+     */
     const initAuth = async () => {
-        return new Promise((resolve) => {
-            unsubscribe.value = onAuthStateChanged(auth, async (currentUser) => {
-                if (currentUser) {
-                    // user.value = currentUser;
-                    // await fetchUserData(currentUser.uid);
-                    user.value = await fetchUserById(currentUser.uid);
-                } else {
-                    user.value = null;
-                }
-                resolve();
-            });
+        return new Promise((resolve, reject) => {
+            try {
+                unsubscribe.value = onAuthStateChanged(auth, async (currentUser) => {
+                    if (currentUser) {
+                        user.value = await fetchUserById(currentUser.uid);
+                    } else {
+                        user.value = null;
+                    }
+                    resolve();
+                });
+            } catch (error) {
+                console.error("Error initializing auth: ", error.message);
+                reject(error);
+            }
         });
     };
 
+    /**
+     * Función para limpiar la autenticación
+     */
     const cleanupAuth = () => {
         if (unsubscribe.value) {
             unsubscribe.value();

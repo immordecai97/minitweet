@@ -1,11 +1,11 @@
 <script setup>
+import { onMounted, ref } from 'vue';
+import { es } from 'date-fns/locale';
+import useAuth from '@composables/useAuth';
+import usePosts from '@composables/usePosts';
+import { formatDistanceToNow } from 'date-fns';
 import ContainerComp from '@components/ContainerComp.vue';
 import ExpandableText from '@components/ExpandableText.vue';
-import usePosts from '@composables/usePosts';
-import useAuth from '@composables/useAuth';
-import { onMounted, ref } from 'vue';
-import { formatDistanceToNow } from 'date-fns';
-import { es } from 'date-fns/locale';
 
 const { user } = useAuth();
 const { posts, fetchPosts, addPost } = usePosts();
@@ -73,7 +73,7 @@ onMounted(async () => {
                             <h2 v-if="post?.title" class="font-bold break-words whitespace-normal">{{ post.title }}</h2>
                             <ExpandableText :text="post.body" />
                             <ContainerComp class="flex justify-end">
-                                <p class="text-xs text-gray-500 -mb-3">
+                                <p v-if="post?.create_at" class="text-xs text-gray-500 -mb-3">
                                     {{ formatDistanceToNow(convertTimestampToDate(post.create_at), {
                                         addSuffix: true,
                                     locale: es }) }}
