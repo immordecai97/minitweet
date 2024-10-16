@@ -16,8 +16,8 @@ const { posts, fetchPostsByUserId } = usePosts();
 const viewedUser = ref(null);
 const isOwnAccount = ref(true);
 
-function handlerLogoutUser() {
-        logout();
+async function handlerLogoutUser() {
+        await logout();
         router.push({ name: 'Login' });
 }
 
