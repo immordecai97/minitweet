@@ -15,6 +15,10 @@ import TitleComp from '@/components/TitleComp.vue';
           text="Creada por un entusiasta de la tecnología, Minitweet es la plataforma perfecta para aquellos que buscan una experiencia de redes sociales más simple y directa."
           class="text-pretty text-center" />
       </ContainerComp>
+      <ContainerComp tag="section" class="flex flex-col gap-4">
+        <ContainerComp tag="h2" text="Por si nos quieres probar en línea" class="font-bold text-center text-xl text-pretty" />
+        <a target="_blank" href="https://minitweet.netlify.app/" class="text-center text-blue-700 hover:underline">Visita la app en línea</a>
+      </ContainerComp>
 
     </ContainerComp>
     <ContainerComp tag="section" class="flex flex-col gap-4">
