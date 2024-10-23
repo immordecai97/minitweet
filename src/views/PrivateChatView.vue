@@ -40,34 +40,3 @@ import ContainerComp from '@/components/ContainerComp.vue';
         </ContainerComp>
     </div>
 </template>
-<!-- <template>
-    <div class="w-full fixed left-0 top-0 px-2">
-        <ContainerComp class="p-4 bg-gray-800 text-white">
-            <h1 class="text-xl">Private Chat</h1>
-        </ContainerComp>
-    </div>
-    <ContainerComp class="mx-auto flex flex-col h-screen w-full max-w-96 mt-12 mb-32">
-        <div class="flex-1 overflow-y-auto p-4 bg-gray-100  mb-">
-            <div class="space-y-4">
-                <div class="flex items-start">
-                    <div class="bg-blue-500 text-white p-3 rounded-lg max-w-xs">
-                        <p>Hello! How are you?</p>
-                    </div>
-                </div>
-                <div class="flex items-start justify-end">
-                    <div class="bg-gray-500 p-3 rounded-lg max-w-xs">
-                        <p>I'm good, thanks! How about you?</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </ContainerComp>
-    <div class="w-full fixed left-0 bottom-[66px] px-2">
-        <ContainerComp class="bg--200 flex gap-1 p-2 w-full max-w-96">
-            <div class="flex-1">
-                <input type="text" class="p-2 rounded-lg w-full" placeholder="Type your message...">
-            </div>
-            <button class="p-2 bg-blue-500 text-white rounded-lg">Send</button>
-        </ContainerComp>
-    </div>
-</template> -->
