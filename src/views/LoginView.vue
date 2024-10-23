@@ -3,6 +3,7 @@ import ContainerComp from '@components/ContainerComp.vue';
 import { onMounted, onUnmounted, ref } from 'vue';
 import useAuth from '@composables/useAuth';
 import { RouterLink, useRouter } from 'vue-router';
+import TitleComp from '@/components/TitleComp.vue';
 
 const router = useRouter();
 const user = ref({
@@ -34,9 +35,9 @@ async function handlerSubmit() {
 </script>
 
 <template>
-        <ContainerComp class="flex-1 flex flex-col justify-center items-center">
-                <ContainerComp class="flex flex-col gap-6 max-w-96">
-                        <ContainerComp tag="h1" text="Login" class="text-3xl font-bold text-center" />
+        <div class="grid place-items-center grid-rows-[1fr] h-[calc(100vh-65px)]">
+                <ContainerComp class="flex flex-col gap-6">
+                        <TitleComp text="Login" />
                         <ContainerComp tag="form" @submit.prevent="handlerSubmit" class="flex-1" action="#">
                                 <ContainerComp class="flex flex-col gap-4 items-center">
                                         <ContainerComp>
@@ -67,5 +68,5 @@ async function handlerSubmit() {
                                         registrate aquí</RouterLink>
                         </ContainerComp>
                 </ContainerComp>
-        </ContainerComp>
+        </div>
 </template>

@@ -1,11 +1,12 @@
 <script setup>
 import ContainerComp from '@components/ContainerComp.vue';
+import TitleComp from '@/components/TitleComp.vue';
 </script>
 
 <template>
-  <ContainerComp class="flex flex-col gap-6 max-w-xl">
+  <ContainerComp class="flex flex-col gap-6 max-w-xl pb-20">
     <ContainerComp tag="section" class="flex flex-col gap-4">
-      <ContainerComp tag="h1" text="Sobre Minitweet" class="font-bold text-center text-3xl" />
+       <TitleComp text="Sobre Minitweet" />
       <ContainerComp class="flex flex-col gap-4 sm:flex-row">
         <ContainerComp tag="p"
           text="Minitweet es una red social de microblogging que te permite compartir tus pensamientos, ideas y opiniones en solo 280 caracteres."

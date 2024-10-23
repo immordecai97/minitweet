@@ -3,10 +3,14 @@ import { onMounted, ref } from 'vue';
 import { es } from 'date-fns/locale';
 import useAuth from '@composables/useAuth';
 import usePosts from '@composables/usePosts';
+import useLoading from '@/composables/useLoading';
 import { formatDistanceToNow } from 'date-fns';
 import ContainerComp from '@components/ContainerComp.vue';
 import ExpandableText from '@components/ExpandableText.vue';
+import TitleComp from '@/components/TitleComp.vue';
+import FeedSkeleton from '@/components/skeletons/FeedSkeleton.vue';
 
+const { loading, toggleLoading } = useLoading();
 const { user } = useAuth();
 const { posts, fetchPosts, addPost } = usePosts();
 const openModal = ref(false);
@@ -36,11 +40,101 @@ function convertTimestampToDate(timestamp) {
 }
 
 onMounted(async () => {
-    fetchPosts();
+    try {
+        fetchPosts();
+    } catch (error) {
+        console.error(error);
+    } finally {
+        toggleLoading();
+    }
 });
 </script>
 
 <template>
+    <div class="grid grid-rows-[1fr] h-[calc(100vh-64px)] overflow-y-auto">
+        <template v-if="!loading">
+            <ContainerComp class="flex-1 flex flex-col" v-if="posts.length">
+                <TitleComp text="Feed" :stickyTop="true" />
+                <ContainerComp tag="ul" v-if="posts && posts.length" class="flex-1 flex flex-col gap-4 pb-12">
+                    <ContainerComp tag="li" v-for="post in posts" :key="post.id">
+                        <ContainerComp tag="article"
+                            class="bg-transparent w-full border-b border-gray-800 pb-4 max-w-96">
+                            <header class="flex gap-2 items-start">
+                                <figure class="w-10 h-10">
+                                    <router-link :to="{ name: 'AccountDetail', params: { id: post.user.uid } }">
+                                        <img alt="user photo"
+                                            class="aspect-w-1 rounded-full transition border-2 hover:border-blue-700"
+                                            :src="post?.user?.photoURL || perfilPhotoDefault">
+                                    </router-link>
+                                </figure>
+
+                                <h3 class="font-bold flex-1">
+                                    <router-link :to="{ name: 'AccountDetail', params: { id: post.user.uid } }"
+                                        class=" transition hover:text-blue-700">
+                                        {{ post?.user?.name }}
+                                    </router-link>
+                                    <span class="text-gray-600 ">
+                                        @<router-link :to="{ name: 'AccountDetail', params: { id: post.user.uid } }"
+                                            class="transition hover:text-blue-700">
+                                            {{ post?.user?.username }}
+                                        </router-link>
+                                    </span>
+                                </h3>
+                            </header>
+                            <section class="pl-12 -mt-5">
+                                <h2 v-if="post?.title" class="font-bold break-words whitespace-normal">{{ post.title }}
+                                </h2>
+                                <ExpandableText :text="post.body" />
+                                <ContainerComp class="flex justify-end">
+                                    <p v-if="post?.create_at" class="text-xs text-gray-500 -mb-3">
+                                        {{ formatDistanceToNow(convertTimestampToDate(post.create_at), {
+                                            addSuffix: true,
+                                            locale: es
+                                        }) }}
+                                    </p>
+                                </ContainerComp>
+                            </section>
+                        </ContainerComp>
+                    </ContainerComp>
+                </ContainerComp>
+                <ContainerComp v-else class="text-center text-gray-400 text-opacity-50 my-24">
+                    Aún no hay publicaciones...
+                </ContainerComp>
+            </ContainerComp>
+        </template>
+        <template v-else>
+            <FeedSkeleton />
+        </template>
+
+    </div>
+    <button @click="toggleModal"
+        class="absolute bottom-1 right-0 bg-white text-black px-4 py-2 rounded-lg transition border border-transparent hover:bg-black hover:border-white hover:text-white">
+        Publicar
+    </button>
+    <Teleport to="#modal" v-if="openModal">
+        <div @click.self="toggleModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+            <ContainerComp class="bg-black rounded-lg p-4 max-w-md">
+                <form action="#" @submit.prevent="handlerSubmit()" class="flex flex-col gap-4">
+                    <input v-model="post.title" type="text" placeholder="Título"
+                        class="text-white w-full p-2 bg-transparent border-b focus:outline-none focus:border-blue-600 custom-input">
+                    <textarea v-model="post.body" placeholder="Contenido"
+                        class="text-white w-full p-2 bg-transparent border-b focus:outline-none focus:border-blue-600 custom-input resize-none"></textarea>
+                    <ContainerComp class="flex flex-col gap-2">
+                        <button type="submit"
+                            class="transition w-full py-2 bg-white text-black rounded-lg border border-transparent hover:border-white hover:text-white hover:bg-transparent">
+                            Publicar
+                        </button>
+                        <button @click="toggleModal"
+                            class="transition w-full py-2 bg-transparent text-white rounded-lg border border-transparent hover:border-white hover:text-white hover:bg-transparent">
+                            Cancelar
+                        </button>
+                    </ContainerComp>
+                </form>
+            </ContainerComp>
+        </div>
+    </Teleport>
+</template>
+<!-- <template>
     <ContainerComp class="flex-1 flex flex-col">
         <ContainerComp class="flex-1 flex flex-col">
             <ContainerComp tag="h1" text="Feed" class="text-3xl font-bold text-center" />
@@ -117,4 +211,4 @@ onMounted(async () => {
             </ContainerComp>
         </div>
     </Teleport>
-</template>
+</template> -->

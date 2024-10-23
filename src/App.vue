@@ -13,9 +13,11 @@ function updateTitle(to) {
 }
 
 onMounted(() => {
-  router.afterEach((to) => {
-    updateTitle(to)
-  })
+  try {
+    router.afterEach((to) => { updateTitle(to) })
+  } catch (error) {
+    console.error(error)
+  }
 })
 
 /**
@@ -34,10 +36,20 @@ onMounted(() => {
 </script>
 
 <template>
+  <div class="grid grid-rows-[1fr_auto] text-slate-200 px-2">
+    <ContainerComp tag="main" class="relative max-w-96">
+      <RouterView />
+    </ContainerComp>
+    <ContainerComp>
+      <NavBar />
+    </ContainerComp>
+  </div>
+</template>
+<!-- <template>
   <ContainerComp class="min-h-screen flex flex-col overflow-hidden bg-black text-slate-200">
     <ContainerComp tag="main" class="flex-1 overflow-auto p-2 mb-16 flex flex-col text-sm md:text-bas">
       <RouterView />
     </ContainerComp>
     <NavBar />
   </ContainerComp>
-</template>
+</template> -->

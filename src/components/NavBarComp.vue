@@ -29,20 +29,20 @@ onUnmounted(() => {
                 <ul class="min-h-16 flex gap-8 justify-center items-center">
                         <template v-if="user">
                                 <li>
-                                        <RouterLink to="/feed"
+                                        <RouterLink to="/feed" title="Feed"
                                                 class="transition duration-300 ease-in-out transform hover:scale-110 hover:underline">
                                                 Feed</RouterLink>
                                 </li>
                                 <li>
-                                        <RouterLink to="/account"
+                                        <RouterLink to="/account" title="Cuenta"
                                                 class="transition duration-300 ease-in-out transform hover:scale-110 hover:underline">
                                                 Cuenta</RouterLink>
                                 </li>
-                                <!-- <li>
-                                        <button @click="handlerLogoutUser"
-                                                class="transition duration-300 ease-in-out transform hover:scale-110 hover:underline">
-                                                Cerrar sesión</button>
-                                </li> -->
+                                <li>
+                                        <RouterLink disabled title="Chat en construcción" to="/chat"
+                                                class=" text-gray-600 cursor-not-allowed">
+                                                Chat</RouterLink>
+                                </li>
                         </template>
                         <template v-else>
                                 <li>
