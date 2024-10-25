@@ -53,7 +53,7 @@ onUnmounted(() => {
                                 <li>
                                         <RouterLink to="/login"
                                                 class="transition duration-300 ease-in-out transform hover:scale-110 hover:underline">
-                                                Iniciar sesión.</RouterLink>
+                                                Iniciar sesión</RouterLink>
                                 </li>
                         </template>
                 </ul>
