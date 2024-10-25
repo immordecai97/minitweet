@@ -36,7 +36,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="grid grid-rows-[1fr_auto_auto] h-screen text-slate-200 px-2">
+  <div class="app-wrapper grid grid-rows-[1fr_auto_auto] h-screen text-slate-200 px-2">
     <ContainerComp tag="main" class="max-w-96">
       <RouterView />
     </ContainerComp>
