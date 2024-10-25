@@ -21,10 +21,10 @@ onMounted(() => {
 })
 
 /**
- * TODO: Agregar loaders o skeletons
+ * TODO: Agregar loaders o skeletons                                                ----Listo----
  * TODO: Agregar mensajes de error (snackbars)
  * TODO: Agregar validaciones de formulario
- * TODO: Agregar imagen de perfil y de portada
+ * TODO: Agregar imagen de perfil y de portada                                      ----Medio Listo----
  * TODO: Poder visitar el perfil de un usuario                                      ----Listo----
  * TODO: Poder comentar un tweet
  * TODO: Poder ver los tweets de un usuario y los propios al visitar el perfil      ----Listo----
