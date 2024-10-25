@@ -60,7 +60,7 @@ onMounted(async () => {
                         <ContainerComp tag="article"
                             class="bg-transparent w-full border-b border-gray-800 pb-4 max-w-96">
                             <header class="flex gap-2 items-start">
-                            
+
                                 <figure class="w-10 h-10">
                                     <router-link :to="{ name: 'AccountDetail', params: { id: post.user.uid } }">
                                         <img alt="user photo"
@@ -108,10 +108,16 @@ onMounted(async () => {
         </template>
 
     </div>
-    <button @click="toggleModal"
+    <!-- <button @click="toggleModal"
         class="absolute bottom-1 right-0 bg-white text-black px-4 py-2 rounded-lg transition border border-transparent hover:bg-black hover:border-white hover:text-white">
         Publicar
-    </button>
+    </button> -->
+    <Teleport to="#btnPost">
+        <button @click="toggleModal"
+            class="absolute bottom-1 right-0 bg-white text-black px-4 py-2 rounded-lg transition border border-transparent hover:bg-black hover:border-white hover:text-white">
+            Publicar
+        </button>
+    </Teleport>
     <Teleport to="#modal" v-if="openModal">
         <div @click.self="toggleModal"
             class="fixed inset-0 bg-black bg-opacity-60 backdrop-filter backdrop-blur-sm flex justify-center items-center z-50">
