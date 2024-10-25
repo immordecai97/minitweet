@@ -78,14 +78,14 @@ onUnmounted(() => {
                                                         required>
                                         </ContainerComp>
 
-                                        <ContainerComp>
-                                                <!-- Recordar: Debería ser un input tipo file -->
+                                        <!-- TODO: Agregar aquí tambien las funcion de cambio de foto de perfil -->
+                                        <!-- <ContainerComp>
                                                 <label for="photo" class="hidden">photo</label>
                                                 <input v-model="userLogged.photoURL" type="text" id="photo" disabled
                                                         name="photo" placeholder="Foto de perfil (proximamente)"
                                                         class="w-full p-2 bg-transparent border-b focus:outline-none focus:border-blue-600 custom-input opacity-30 cursor-not-allowed"
                                                         required>
-                                        </ContainerComp>
+                                        </ContainerComp> -->
 
                                         <ContainerComp>
                                                 <label for="bio" class="hidden">Biografía</label>
