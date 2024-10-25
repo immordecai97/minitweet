@@ -23,9 +23,7 @@ const viewedUser = ref(null);
 const isOwnAccount = ref(true);
 const openModal = ref(false);
 
-function toggleModal() {
-        openModal.value = !openModal.value;
-}
+function toggleModal() { if (isOwnAccount.value) openModal.value = !openModal.value; }
 
 function handlerLogoutUser() {
         logout().then(() => { router.push({ name: 'Login' }); });
@@ -36,7 +34,7 @@ function convertTimestampToDate(timestamp) {
 }
 
 function savePhoto() {
-        if (tempPreview.value && tempPreview.value !== viewedUser.value?.photoURL && tempPreview.value !== perfilPhotoDefault) {
+        if (isOwnAccount.value && tempPreview.value && tempPreview.value !== viewedUser.value?.photoURL && tempPreview.value !== perfilPhotoDefault) {
                 const userConfirmed = confirm("¿Estás seguro de que deseas cambiar la imagen?");
                 if (userConfirmed) {
                         console.log('Guardando...');
@@ -54,13 +52,15 @@ function cancelPhotoUpload() {
 }
 
 function handlePhotoUpload(e) {
-        tempPreview.value = viewedUser.value?.photoURL || perfilPhotoDefault;
-        const file = e.target.files[0];
-        const reader = new FileReader();
-        reader.onload = async () => {
-                tempPreview.value = reader.result;
+        if (isOwnAccount.value) {
+                tempPreview.value = viewedUser.value?.photoURL || perfilPhotoDefault;
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = async () => {
+                        tempPreview.value = reader.result;
+                }
+                reader.readAsDataURL(file);
         }
-        reader.readAsDataURL(file);
 }
 
 onMounted(async () => {
@@ -102,10 +102,18 @@ onUnmounted(() => {
                                                 <ContainerComp
                                                         class="max-w-96 flex justify-between items-end -mt-10 xs:-mt-8">
                                                         <figure class="w-20 h-20 ml-2">
-                                                                <img @click="toggleModal"
+                                                                <img v-if="isOwnAccount" @click="toggleModal"
                                                                         :src="viewedUser?.photoURL || perfilPhotoDefault"
                                                                         alt="User cover photo"
                                                                         class="w-20 h-20 object-cover rounded-full border-4 border-black cursor-pointer">
+                                                                <img v-else
+                                                                        :src="viewedUser?.photoURL || perfilPhotoDefault"
+                                                                        alt="User cover photo"
+                                                                        class="w-20 h-20 object-cover rounded-full border-4 border-black">
+                                                                <!-- <img @click="toggleModal"
+                                                                        :src="viewedUser?.photoURL || perfilPhotoDefault"
+                                                                        alt="User cover photo"
+                                                                        class="w-20 h-20 object-cover rounded-full border-4 border-black cursor-pointer"> -->
                                                         </figure>
                                                         <div class="flex gap-2" v-if="isOwnAccount">
                                                                 <router-link to="/account/edit"
