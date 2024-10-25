@@ -102,7 +102,7 @@ watch(() => route.params.id, async (newUserId, oldUserId) => {
 });
 
 // Observar los cambios de la foto de perfil
-watch(() => user.value.photoURL, (newPhotoURL) => {
+watch(() => user.value?.photoURL, (newPhotoURL) => {
         if (isOwnAccount.value) {
                 viewedUser.value.photoURL = newPhotoURL;
                 updatePostsProfilePhoto(newPhotoURL)
@@ -199,7 +199,6 @@ onUnmounted(() => {
                                                 <ContainerComp tag="ul" v-if="posts && posts.length"
                                                         class="flex-1 flex flex-col gap-4 overflow-auto">
                                                         <ContainerComp tag="li" v-for="post in posts" :key="post.id">
-                                                                {{ console.log(post) }}
                                                                 <ContainerComp tag="article"
                                                                         class="bg-transparent w-full border-b border-gray-800 pb-4 max-w-96">
                                                                         <header class="flex gap-2 items-start">
