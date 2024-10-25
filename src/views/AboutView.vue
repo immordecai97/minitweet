@@ -16,8 +16,8 @@ import TitleComp from '@/components/TitleComp.vue';
           class="text-pretty text-center" />
       </ContainerComp>
       <ContainerComp tag="section" class="flex flex-col gap-4">
-        <ContainerComp tag="h2" text="Por si nos quieres probar en línea" class="font-bold text-center text-xl text-pretty" />
-        <a target="_blank" href="https://minitweet.netlify.app/" class="text-center text-blue-700 hover:underline">Visita la app en línea</a>
+        <ContainerComp tag="h2" text="(Modo en línea: sujeto a cambios)" class="font-bold text-center text-xl text-orange-400 text-pretty" />
+        <!-- <a target="_blank" href="https://minitweet.netlify.app/" class="text-center text-blue-700 hover:underline">Visita la app en línea</a> -->
       </ContainerComp>
 
     </ContainerComp>
