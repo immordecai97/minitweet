@@ -112,7 +112,7 @@ onMounted(async () => {
         Publicar
     </button>
     <Teleport to="#modal" v-if="openModal">
-        <div @click.self="toggleModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+        <div @click.self="toggleModal" class="fixed inset-0 bg-black bg-opacity-60 backdrop-filter backdrop-blur-sm flex justify-center items-center z-50">
             <ContainerComp class="bg-black rounded-lg p-4 max-w-md">
                 <form action="#" @submit.prevent="handlerSubmit()" class="flex flex-col gap-4">
                     <input v-model="post.title" type="text" placeholder="Título"
