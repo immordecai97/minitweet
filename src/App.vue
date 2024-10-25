@@ -37,7 +37,7 @@ onMounted(() => {
 
 <template>
   <div class="grid grid-rows-[1fr_auto] text-slate-200 px-2">
-    <ContainerComp tag="main" class="relative max-w-96">
+    <ContainerComp tag="main" class="relative max-w-96 overflow-y-auto">
       <RouterView />
     </ContainerComp>
     <ContainerComp>
