@@ -2,7 +2,9 @@ import { ref } from 'vue';
 import { auth, db } from '@services/firebase';
 import { doc, setDoc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
+import useStorage from './useStorage';
 
+const { uploadFile, getFileURL } = useStorage();
 const user = ref(null);
 const unsubscribe = ref(null);
 
@@ -83,12 +85,28 @@ const useAuth = () => {
      */
     const updateUser = async (updatedData) => {
         try {
-            await updateDoc(doc(db, 'usersProfiles', updatedData.uid), updatedData);
+            await updateDoc(doc(db, 'usersProfiles', user.value.uid), updatedData);
             user.value = { ...user.value, ...updatedData };
         } catch (error) {
             console.error("Error updating user data: ", error.message);
         }
     };
+
+    /**
+     * Función para actualizar la foto de perfil de un usuario
+     * @param {{photoURL: string}} param0 --> photoURL: es la propiedad del usuario que se va a actualizar 
+     * @param {File} filePhoto  --> filePhoto: es el archivo de la foto de perfil
+     */
+    const updateProfilePhoto = async (filePhoto) => {
+        const fileExtension = filePhoto.name.split('.').pop();
+        // const fileName = `${filePhoto.name}.${fileExtension}`;
+        // const filePath = `users/${user.value.uid}/profilePhotos/${filePhoto.name}`;
+        const filePath = `users/${user.value?.uid}/profilePhotos/profilePhoto.${fileExtension}`;
+        await uploadFile(filePath, filePhoto);
+        const photoURL = await getFileURL(filePath);
+        updateUser({ photoURL });
+    }
+
 
     /**
      * Función para inicializar la autenticación
@@ -122,7 +140,7 @@ const useAuth = () => {
         }
     };
 
-    return { user, login, register, logout, updateUser, fetchUserById, initAuth, cleanupAuth };
+    return { user, login, register, logout, updateUser, fetchUserById, initAuth, cleanupAuth, updateProfilePhoto };
 };
 
 export default useAuth;

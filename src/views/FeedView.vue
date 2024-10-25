@@ -60,10 +60,11 @@ onMounted(async () => {
                         <ContainerComp tag="article"
                             class="bg-transparent w-full border-b border-gray-800 pb-4 max-w-96">
                             <header class="flex gap-2 items-start">
+                            
                                 <figure class="w-10 h-10">
                                     <router-link :to="{ name: 'AccountDetail', params: { id: post.user.uid } }">
                                         <img alt="user photo"
-                                            class="aspect-w-1 rounded-full transition border-2 hover:border-blue-700"
+                                            class="w-10 h-10 object-cover rounded-full border-2 border-black cursor-pointer hover:border-blue-700"
                                             :src="post?.user?.photoURL || perfilPhotoDefault">
                                     </router-link>
                                 </figure>
@@ -112,7 +113,8 @@ onMounted(async () => {
         Publicar
     </button>
     <Teleport to="#modal" v-if="openModal">
-        <div @click.self="toggleModal" class="fixed inset-0 bg-black bg-opacity-60 backdrop-filter backdrop-blur-sm flex justify-center items-center z-50">
+        <div @click.self="toggleModal"
+            class="fixed inset-0 bg-black bg-opacity-60 backdrop-filter backdrop-blur-sm flex justify-center items-center z-50">
             <ContainerComp class="bg-black rounded-lg p-4 max-w-md">
                 <form action="#" @submit.prevent="handlerSubmit()" class="flex flex-col gap-4">
                     <input v-model="post.title" type="text" placeholder="Título"
