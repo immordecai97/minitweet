@@ -25,7 +25,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-        <nav class="borderFinito fixed bottom-0 left-0 bg-black w-full">
+        <nav class="borderFinito bg-black w-full">
                 <ul class="min-h-16 flex gap-8 justify-center items-center">
                         <template v-if="user">
                                 <li>
