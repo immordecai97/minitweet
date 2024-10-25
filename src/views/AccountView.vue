@@ -147,10 +147,6 @@ onUnmounted(() => {
                                                                         :src="viewedUser?.photoURL || perfilPhotoDefault"
                                                                         alt="User cover photo"
                                                                         class="w-20 h-20 object-cover rounded-full border-4 border-black">
-                                                                <!-- <img @click="toggleModal"
-                                                                        :src="viewedUser?.photoURL || perfilPhotoDefault"
-                                                                        alt="User cover photo"
-                                                                        class="w-20 h-20 object-cover rounded-full border-4 border-black cursor-pointer"> -->
                                                         </figure>
                                                         <div class="flex gap-2" v-if="isOwnAccount">
                                                                 <router-link to="/account/edit"
