@@ -86,3 +86,11 @@ body {
         text-decoration-color: red;
         /* Color del subrayado */
 }
+
+/* CSS de área segura de un dispositivo movil */
+.app-wrapper {
+        padding-top: env(safe-area-inset-top); /* Asegura espacio en la parte superior */
+        padding-right: env(safe-area-inset-right); /* Espacio seguro en el lateral derecho */
+        padding-bottom: env(safe-area-inset-bottom); /* Espacio seguro en la parte inferior */
+        padding-left: env(safe-area-inset-left); /* Espacio seguro en el lateral izquierdo */
+}
