@@ -36,13 +36,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="grid grid-rows-[1fr_auto] h-[calc(10vh-65px)] text-slate-200 px-2">
+  <div class="grid grid-rows-[1fr] h-[calc(100vh-65px)] text-slate-200 px-2">
     <ContainerComp tag="main" class="max-w-96">
       <RouterView />
     </ContainerComp>
-    <ContainerComp id="btnPost" class="relative max-w-96 bg-red-500">
-    </ContainerComp>
-    <ContainerComp class="fixed bottom-0 app-wrapper">
+
+    <ContainerComp class="fixed bottom-0 left-0 right-0 app-wrapper w-full ">
+      <ContainerComp id="btnPost" class="relative mx-auto w-full max-w-96">
+      </ContainerComp>
       <NavBar />
     </ContainerComp>
   </div>

@@ -113,10 +113,12 @@ onMounted(async () => {
         Publicar
     </button> -->
     <Teleport to="#btnPost">
-        <button @click="toggleModal"
-            class="absolute bottom-1 right-0 bg-white text-black px-4 py-2 rounded-lg transition border border-transparent hover:bg-black hover:border-white hover:text-white">
-            Publicar
-        </button>
+        <!-- <ContainerComp> -->
+            <button @click="toggleModal"
+                class="absolute bottom-1 right-0 bg-white text-black px-4 py-2 rounded-lg transition border border-transparent hover:bg-black hover:border-white hover:text-white">
+                Publicar
+            </button>
+        <!-- </ContainerComp> -->
     </Teleport>
     <Teleport to="#modal" v-if="openModal">
         <div @click.self="toggleModal"
