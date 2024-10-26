@@ -4,7 +4,7 @@ import TitleComp from '@/components/TitleComp.vue';
 </script>
 
 <template>
-  <ContainerComp class="flex flex-col gap-6 max-w-xl pb-20">
+  <ContainerComp class="flex flex-col gap-6 max-w-xl pb-20 overflow-y-auto">
     <ContainerComp tag="section" class="flex flex-col gap-4">
        <TitleComp text="Sobre Minitweet" />
       <ContainerComp class="flex flex-col gap-4 sm:flex-row">
