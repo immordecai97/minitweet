@@ -152,10 +152,10 @@ onBeforeUnmount(() => closeModal());
                         <ContainerComp class="flex-1 flex flex-col">
                                 <ContainerComp class="flex-1 flex flex-col gap-4">
                                         <TitleComp text="Cuenta" :stickyTop="true" />
-                                        <ContainerComp class="flex flex-col ">
+                                        <ContainerComp class="flex flex-col">
                                                 <CoverPhotoComp :src="viewedUser?.coverPhotoURL" :alt="viewedUser?.name"
                                                         :isOwnAccount="isOwnAccount"
-                                                        :onClick="() => handlerContentModal('coverPhoto')"/>
+                                                        :onClick="() => handlerContentModal('coverPhoto')" />
                                                 <ContainerComp
                                                         class="max-w-96 flex justify-between items-end -mt-10 xs:-mt-8">
                                                         <ProfilePhotoComp :src="viewedUser?.photoURL"

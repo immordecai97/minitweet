@@ -66,3 +66,11 @@ input:-ms-autofill {
         box-shadow: 0 0 0 30px #111112 inset !important; /* Cambia el color de fondo */
         -ms-text-fill-color: #ffffff !important; /* Cambia el color del texto */
 }
+
+.z-index-10{
+        z-index: 10;
+}
+
+.z-index-20{
+        z-index: 20;
+}

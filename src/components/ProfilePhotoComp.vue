@@ -19,12 +19,11 @@ defineProps({
 </script>
 
 <template>
-    <figure class="w-20 h-20 ml-2">
-        <!-- Cuando aplicas la doble negación (!!) a una función, primero se convierte en false y luego de nuevo en true, lo que confirma que la función es un valor "truthy" o viceversa ("falsy"). -->
-        <img :src="src || '/perfilPhotoDefault.png'" :alt="alt || defaultAlt" v-if="isOwnAccount"
-            class="z-30 w-20 h-20 object-cover rounded-full border-4 border-black" :class="{ 'cursor-pointer': !!onClick }"
+    <figure class="w-20 h-20 ml-2 rounded-full border-4 border-black overflow-hidden z-index-20">
+        <img v-if="isOwnAccount" :src="src || '/perfilPhotoDefault.png'" :alt="alt || defaultAlt" 
+            class="object-cover w-full h-full" :class="{ 'cursor-pointer': !!onClick }"
             v-on="{ click: onClick }">
-        <img :src="src || '/perfilPhotoDefault.png'" :alt="alt || defaultAlt" v-else
-            class="z-30 w-20 h-20 object-cover rounded-full border-4 border-black">
+        <img v-else :src="src || '/perfilPhotoDefault.png'" :alt="alt || defaultAlt"
+            class="object-cover w-full h-full">
     </figure>
 </template>
