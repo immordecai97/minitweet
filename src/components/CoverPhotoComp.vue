@@ -24,7 +24,7 @@ defineProps({
     <ContainerComp tag="figure" class="max-w-96 cursor-pointer aspect-w-16 aspect-h-9" v-if="isOwnAccount">
         <img :src="src || defaultCoverPhotoURL" :alt="alt || defaultAlt" class="object-contain" v-on="{click: onClick}">
     </ContainerComp>
-    <ContainerComp tag="figure" class="max-w-96" v-else>
-        <img :src="src || defaultCoverPhotoURL" :alt="alt || defaultAlt" class="w-full">
+    <ContainerComp tag="figure" class="max-w-96 cursor-pointer aspect-w-16 aspect-h-9" v-else>
+        <img :src="src || defaultCoverPhotoURL" :alt="alt || defaultAlt" class="object-contain">
     </ContainerComp>
 </template>
