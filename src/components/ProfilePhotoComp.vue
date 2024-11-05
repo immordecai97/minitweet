@@ -22,9 +22,9 @@ defineProps({
     <figure class="w-20 h-20 ml-2">
         <!-- Cuando aplicas la doble negación (!!) a una función, primero se convierte en false y luego de nuevo en true, lo que confirma que la función es un valor "truthy" o viceversa ("falsy"). -->
         <img :src="src || '/perfilPhotoDefault.png'" :alt="alt || defaultAlt" v-if="isOwnAccount"
-            class="w-20 h-20 object-cover rounded-full border-4 border-black" :class="{ 'cursor-pointer': !!onClick }"
+            class="z-30 w-20 h-20 object-cover rounded-full border-4 border-black" :class="{ 'cursor-pointer': !!onClick }"
             v-on="{ click: onClick }">
         <img :src="src || '/perfilPhotoDefault.png'" :alt="alt || defaultAlt" v-else
-            class="w-20 h-20 object-cover rounded-full border-4 border-black">
+            class="z-30 w-20 h-20 object-cover rounded-full border-4 border-black">
     </figure>
 </template>
