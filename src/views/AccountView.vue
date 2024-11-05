@@ -1,128 +1,149 @@
 <script setup>
-import TitleComp from '@/components/TitleComp.vue';
-import ContainerComp from '@/components/ContainerComp.vue';
-import ExpandableText from '@/components/ExpandableText.vue';
+//------------------------------------------------------------------- COMPOSABLES
 import useAuth from '@/composables/useAuth';
 import usePosts from '@/composables/usePosts';
 import useLoading from '@/composables/useLoading';
-import { onMounted, onUnmounted, ref, watch } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
-import { formatDistanceToNow } from 'date-fns';
-import { es } from 'date-fns/locale';
+import useModal from '@/composables/useModal'
+//------------------------------------------------------------------- COMPONENTS
+import TitleComp from '@/components/TitleComp.vue';
+import ContainerComp from '@/components/ContainerComp.vue';
 import AccountSkeleton from '@/components/skeletons/AccountSkeleton.vue';
+import PostList from '@/components/PostListComp.vue';
+import CoverPhotoComp from '@/components/CoverPhotoComp.vue';
+import ProfilePhotoComp from '@/components/ProfilePhotoComp.vue';
+import Modal from '@components/ModalComp.vue';
+//------------------------------------------------------------------- VUE COMPOSITION API
+import { onMounted, ref, watch, onBeforeUnmount } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 
-const { loading, setLoading } = useLoading();
-
-const perfilPhotoDefault = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJQAAACUCAMAAABC4vDmAAAAMFBMVEXk5ueutLeor7Lf4ePn6eqrsbW5vsHIzM7a3d60ur3BxsjR1NbN0dPX2tzr7O29wsX2DjRMAAADaUlEQVR4nO2bW3LkIAwADYi3be5/25iZZB4bxyDZgqkt+ivZn+0SQgahTNNgMBgMBoPBYDAYDAaDwWCaAGBSG/mn3i53AFQMxt8xdpm6ewE466XU4getpZlVVy9YjHgKPcRE6Ke1KclfRnct2UkLprATpWe05g5W4PzfShmZVHOneGh0D1ZjK5j/yKZ3lpZLCPZ46R7Bcu2sKuN0i1Uzp1gXpxvN8qpeSQjTyMkgAiV0aJFWMGOctnrVpLZXJ/k3DRYQAi5Q2wJGdqkFqZThXj98oHKouK2wGZVhzqra78s/oXK8VobgxF2rHMVpY+WUipSU2goo5/pBoqTUtn6cZ+OV5sScVLTV4y0Kjhgp4fmOVajT3TuMUshTyxPG8kmr5xnGmnBCiu8C8b9JMS7fRyY6vSQwSi0fWDwn9YmfGaBKBUap1dOctGU8JVC3H29LaCGePHnvWKT104lVCgIpUMwXd1JR4KxSGcr+Y917NwhFXTIrTYQ7coNeHjhsVnFnVGZFtTyZL6IPFM7Js/YRfgBcWWduAz2sEN082e55prrPwV+iXii89T3i1NKp8tWhzWsDzqpxnDKlO6AW7J3q38BymFjSdHlvP3pu12LuYHRjdUHuaWlhew5xgApe6Fex7RffLUoPrWmxRkipM1KKNLv+IzjfuBjnuOTv3GcYAawvQN8Rqvy/K7dEG5L5Po4ak4KdF9dpvAtWtdhkvL5l02ue538RPoWoYG0oBpOKQUh9WNJz3pvZqSYRg9VZL3bL017B8iFyxwsmZ2uFniFLC2MpBYh7024VWt4yVQpQ9jiLDr1kYGhaHw+71WiJdHGTaosSMpP2kOnKWwTMlWfyAvq63ic4T+2//ta66L4M9iqju1Y6Xx+Kk5N4q9NTJhDP7bl9rZOZZS/Lple2S8UJJ+IYQhEt6ImF7EShoJasq1P8DeIjBGecMoRYAbeT0Ohsh8Cy797AdmjpT9gItEEtIL4vTULiPoTEx0YsGpHslLlJGr5eqs3iZRCN2tTKSVTPMNGnDwjoVPcgQX1SJ1pVherE7AhJqq6t3Wzr3amq67hHqvPImtMxceiVjimn+koaWT5DTaq3zahMcf2A8ucC5yhXdfqEG51UWrx23+InvphSLb97PxQz3cv2FN++VQeKyzcYDAaDwaA9XxcLKh2A6JUdAAAAAElFTkSuQmCC"
-let tempPreview = ref(null);
+const { openModal, closeModal } = useModal();
+const { posts, fetchPostsByUserId } = usePosts();
+const { loading, startLoading, endLoading } = useLoading();
+const { user, logout, fetchUserById, updateProfilePhoto, updateCoverPhoto } = useAuth();
+let tempProfilePhotoPreview = ref(null);
+let tempCoverPhotoPreview = ref(null);
+const defaultPerfilPhoto = '/perfilPhotoDefault.png';
+const defaultCoverPhoto = 'https://placehold.co/1600x900';
 let selectedFile = ref(null);
 const router = useRouter();
 const route = useRoute();
-const { user, logout, initAuth, cleanupAuth, fetchUserById, updateProfilePhoto } = useAuth();
-const { posts, fetchPostsByUserId } = usePosts();
 const viewedUser = ref(null);
 const isOwnAccount = ref(true);
-const openModal = ref(false);
+const modalContent = ref(null);
 
-function toggleModal() { if (isOwnAccount.value) openModal.value = !openModal.value; }
+/**
+ * Dependiendo del contenido que se pase como argumento, se asigna el valor al ref modalContent
+ * y se abre el modal con el contenido correspondiente.
+ * @param content {string} - coverPhoto || profilePhoto
+ */
+function handlerContentModal(content = null) {
+        // coverPhoto || profilePhoto
+        modalContent.value = content;
+        if (modalContent.value) { openModal(); }
+}
 
 function handlerLogoutUser() {
         logout().then(() => { router.push({ name: 'Login' }); });
 }
 
-function convertTimestampToDate(timestamp) {
-        return new Date(timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000);
-}
-
-async function savePhoto() {
-        if (isOwnAccount.value && selectedFile.value && tempPreview.value !== viewedUser.value?.photoURL && tempPreview.value !== perfilPhotoDefault) {
+async function saveProfilePhoto() {
+        if (isOwnAccount.value && selectedFile.value && tempProfilePhotoPreview.value !== viewedUser.value?.photoURL && tempProfilePhotoPreview.value !== defaultPerfilPhoto) {
                 const userConfirmed = confirm("¿Estás seguro de que deseas cambiar la imagen?");
                 if (userConfirmed) {
                         await updateProfilePhoto(selectedFile.value);
                         viewedUser.value.photoURL = user.value.photoURL;
-                        // updatePostsProfilePhoto(user.value.photoURL);
                         console.log('Guardado');
-                        toggleModal();
+                        closeModal();
                 }
         }
 }
 
-function updatePostsProfilePhoto(newPhotoURL) {
-        posts.value.forEach(post => {
-                if (post.userId === viewedUser.value.id) {
-                        post.user.photoURL = newPhotoURL;
-                }
-        });
-}
-
-function cancelPhotoUpload() {
-        tempPreview.value = viewedUser.value?.photoURL || perfilPhotoDefault;
+function cancelProfilePhotoUpload() {
+        tempProfilePhotoPreview.value = viewedUser.value?.photoURL || defaultPerfilPhoto;
         selectedFile.value = null;
-        toggleModal();
+        closeModal();
 }
 
-function handlePhotoUpload(e) {
+function handleProfilePhotoUpload(e) {
         if (isOwnAccount.value) {
-                tempPreview.value = viewedUser.value?.photoURL || perfilPhotoDefault;
+                tempProfilePhotoPreview.value = viewedUser.value?.photoURL || defaultPerfilPhoto;
                 const file = e.target.files[0];
                 selectedFile.value = file;
                 const reader = new FileReader();
                 reader.onload = async () => {
-                        tempPreview.value = reader.result;
+                        tempProfilePhotoPreview.value = reader.result;
+                }
+                reader.readAsDataURL(file);
+        }
+}
+//------------------------------------------------------------------- FUNCIONES PARA COVER FOTO (REFACTORIZAR)
+async function saveCoverPhoto() {
+        if (isOwnAccount.value && selectedFile.value && tempCoverPhotoPreview.value !== viewedUser.value?.coverPhotoURL && tempCoverPhotoPreview.value !== defaultCoverPhoto) {
+                const userConfirmed = confirm("¿Estás seguro de que deseas cambiar la imagen de portada?");
+                if (userConfirmed) {
+                        await updateCoverPhoto(selectedFile.value);
+                        viewedUser.value.coverPhotoURL = user.value.coverPhotoURL;
+                        console.log('Guardado');
+                        closeModal();
+                }
+        }
+}
+
+function cancelCoverPhotoUpload() {
+        tempCoverPhotoPreview.value = viewedUser.value?.coverPhotoURL || defaultCoverPhoto;
+        selectedFile.value = null;
+        closeModal();
+}
+
+function handleCoverPhotoUpload(e) {
+        if (isOwnAccount.value) {
+                tempCoverPhotoPreview.value = viewedUser.value?.coverPhotoURL || defaultCoverPhoto;
+                const file = e.target.files[0];
+                selectedFile.value = file;
+                const reader = new FileReader();
+                reader.onload = async () => {
+                        tempCoverPhotoPreview.value = reader.result;
                 }
                 reader.readAsDataURL(file);
         }
 }
 
+// ------------------------------------------------------ FUNCIONES PARA ACTUALIZAR DATOS DE PERFIL
 async function updateProfileData() {
         try {
-                setLoading(true)
-                const userId = route.params.id;
-                if (userId && userId !== user.value.uid) {
+                startLoading();
+                const userIdOnURL = route.params.id;
+                if (userIdOnURL !== user.value?.uid) {
                         isOwnAccount.value = false;
-                        viewedUser.value = await fetchUserById(userId);
-                        await fetchPostsByUserId(userId);
+                        viewedUser.value = await fetchUserById(userIdOnURL);
                 } else {
                         isOwnAccount.value = true;
                         viewedUser.value = user.value;
-                        await fetchPostsByUserId(user.value.uid);
                 }
+                await fetchPostsByUserId(userIdOnURL);
         } catch (error) {
                 console.error(error);
         } finally {
-                setLoading(false);
+                endLoading();
         }
 }
 
 // Observar los cambios en la ruta
-watch(() => route.params.id, async (newUserId, oldUserId) => {
-        if (newUserId !== oldUserId) {
-                await updateProfileData();
-        }
-});
-
-// Observar los cambios de la foto de perfil
-watch(() => user.value?.photoURL, (newPhotoURL) => {
-        if (isOwnAccount.value) {
-                viewedUser.value.photoURL = newPhotoURL;
-                updatePostsProfilePhoto(newPhotoURL)
-        }
-
+watch([() => route.params.id, () => user.value?.photoURL, () => user.value?.coverPhotoURL], async () => {
+        await updateProfileData();
 });
 
 // Llamar a la función para cargar los datos del perfil al montar el componente
 onMounted(async () => {
         try {
-                await initAuth();
                 await updateProfileData();
         } catch (error) {
                 console.error(error);
         }
 });
 
-onUnmounted(() => {
-        cleanupAuth();
-});
+onBeforeUnmount(() => closeModal());
+
 </script>
 
 <template>
@@ -132,34 +153,28 @@ onUnmounted(() => {
                                 <ContainerComp class="flex-1 flex flex-col gap-4">
                                         <TitleComp text="Cuenta" :stickyTop="true" />
                                         <ContainerComp class="flex flex-col ">
-                                                <ContainerComp tag="figure" class="max-w-96">
-                                                        <img :src="viewedUser?.coverPhotoURL || 'https://placehold.co/1600x900'"
-                                                                alt="User cover photo" class="w-full">
-                                                </ContainerComp>
+                                                <CoverPhotoComp :src="viewedUser?.coverPhotoURL" :alt="viewedUser?.name"
+                                                        :isOwnAccount="isOwnAccount"
+                                                        :onClick="() => handlerContentModal('coverPhoto')"/>
                                                 <ContainerComp
                                                         class="max-w-96 flex justify-between items-end -mt-10 xs:-mt-8">
-                                                        <figure class="w-20 h-20 ml-2">
-                                                                <img v-if="isOwnAccount" @click="toggleModal"
-                                                                        :src="viewedUser?.photoURL || perfilPhotoDefault"
-                                                                        alt="User cover photo"
-                                                                        class="w-20 h-20 object-cover rounded-full border-4 border-black cursor-pointer">
-                                                                <img v-else
-                                                                        :src="viewedUser?.photoURL || perfilPhotoDefault"
-                                                                        alt="User cover photo"
-                                                                        class="w-20 h-20 object-cover rounded-full border-4 border-black">
-                                                        </figure>
-                                                        <div class="flex gap-2" v-if="isOwnAccount">
-                                                                <router-link to="/account/edit"
-                                                                        class="inline-flex items-center px-2 py-1 xs:px-4 xs:py-2 border rounded-lg text-center text-xs xs:text-base transition hover:bg-white hover:text-black">Editar
-                                                                        perfil</router-link>
-                                                                <button @click="handlerLogoutUser"
-                                                                        class="inline-flex items-center px-2 py-1 xs:px-4 xs:py-2 border rounded-lg text-center text-xs xs:text-base transition hover:bg-white hover:text-black">Cerrar
-                                                                        sesión</button>
-                                                        </div>
-                                                        <div class="flex gap-2" v-else>
-                                                                <router-link
-                                                                        :to="{ name: 'PrivateChat', params: { id: viewedUser?.uid } }"
-                                                                        class="inline-flex items-center px-2 py-1 xs:px-4 xs:py-2 border rounded-lg text-center text-xs xs:text-base transition hover:bg-white hover:text-black">Chatear</router-link>
+                                                        <ProfilePhotoComp :src="viewedUser?.photoURL"
+                                                                :alt="viewedUser?.name" :isOwnAccount="isOwnAccount"
+                                                                :onClick="() => handlerContentModal('profilePhoto')" />
+                                                        <div class="flex gap-2">
+                                                                <template v-if="isOwnAccount">
+                                                                        <router-link to="/account/edit"
+                                                                                class="inline-flex items-center px-2 py-1 xs:px-4 xs:py-2 border rounded-lg text-center text-xs xs:text-base transition hover:bg-white hover:text-black">Editar
+                                                                                perfil</router-link>
+                                                                        <button @click="handlerLogoutUser"
+                                                                                class="inline-flex items-center px-2 py-1 xs:px-4 xs:py-2 border rounded-lg text-center text-xs xs:text-base transition hover:bg-white hover:text-black">Cerrar
+                                                                                sesión</button>
+                                                                </template>
+                                                                <template v-else>
+                                                                        <router-link
+                                                                                :to="{ name: 'PrivateChat', params: { id: viewedUser?.uid } }"
+                                                                                class="inline-flex items-center px-2 py-1 xs:px-4 xs:py-2 border rounded-lg text-center text-xs xs:text-base transition hover:bg-white hover:text-black">Chatear</router-link>
+                                                                </template>
                                                         </div>
                                                 </ContainerComp>
                                         </ContainerComp>
@@ -192,46 +207,7 @@ onUnmounted(() => {
                                                         class="break-words whitespace-normal" />
                                                 <ContainerComp tag="h3" text="Publicaciones"
                                                         class="sticky top-12 bg-black z-10 break-words whitespace-normal w-full border-b border-gray-200 py-1 max-w-96 mb-4" />
-                                                <ContainerComp tag="ul" v-if="posts && posts.length"
-                                                        class="flex-1 flex flex-col gap-4 overflow-auto">
-                                                        <ContainerComp tag="li" v-for="post in posts" :key="post.id">
-                                                                <ContainerComp tag="article"
-                                                                        class="bg-transparent w-full border-b border-gray-800 pb-4 max-w-96">
-                                                                        <header class="flex gap-2 items-start">
-                                                                                <figure class="w-10 h-10">
-                                                                                        <img alt="user photo"
-                                                                                                class="w-10 h-10 object-cover rounded-full border-2 border-black"
-                                                                                                :src="post?.user?.photoURL || perfilPhotoDefault">
-                                                                                </figure>
-                                                                                <h3 class="font-bold flex-1">{{
-                                                                                        post?.user?.name }} <span
-                                                                                                class="text-gray-600">@{{
-                                                                                                        post?.user?.username
-                                                                                                }}</span>
-                                                                                </h3>
-                                                                        </header>
-                                                                        <section class="pl-12 -mt-5">
-                                                                                <h2 v-if="post?.title"
-                                                                                        class="font-bold break-words whitespace-normal">
-                                                                                        {{ post.title }}</h2>
-                                                                                <ExpandableText :text="post.body" />
-                                                                                <ContainerComp class="flex justify-end">
-                                                                                        <p
-                                                                                                class="text-xs text-gray-500 -mb-3">
-                                                                                                {{
-                                                                                                        formatDistanceToNow(convertTimestampToDate(post.create_at),
-                                                                                                                {
-                                                                                                                        addSuffix: true,
-                                                                                                                        locale: es
-                                                                                                                }) }}
-                                                                                        </p>
-                                                                                </ContainerComp>
-                                                                        </section>
-                                                                </ContainerComp>
-                                                        </ContainerComp>
-                                                </ContainerComp>
-                                                <ContainerComp tag="p" text="Por ahora no tienes minitweets..." v-else
-                                                        class="break-words whitespace-normal text-gray-400 text-center text-opacity-50 my-24" />
+                                                <PostList :posts="posts" />
                                         </ContainerComp>
                                 </ContainerComp>
                         </ContainerComp>
@@ -240,38 +216,67 @@ onUnmounted(() => {
                         <AccountSkeleton />
                 </template>
         </div>
-        <Teleport to="#modal" v-if="openModal">
-                <div @click.self="toggleModal"
-                        class="fixed inset-0 bg-black bg-opacity-60 backdrop-filter backdrop-blur-sm flex justify-center items-center z-50">
+
+        <Modal>
+                <!-- COVER PHOTO -->
+                <template v-if="modalContent === 'coverPhoto'">
                         <ContainerComp class="max-w-96 px-2">
-                                <!-- Fotito preview -->
-                                <ContainerComp tag="figure" class="aspect-w-1 aspect-h-1">
-                                        <img :src="tempPreview || (viewedUser?.photoURL || perfilPhotoDefault)"
-                                                :alt="viewedUser?.name || 'User photo'"
-                                                class="w-full h-full object-cover">
+                                <ContainerComp tag="figure" class="max-w-96 aspect-w-16 aspect-h-9">
+                                        <img :src="tempCoverPhotoPreview || (viewedUser?.coverPhotoURL || defaultCoverPhoto)"
+                                                :alt="viewedUser?.name || 'Foto de perfil del usuario'"
+                                                class="object-contain">
                                 </ContainerComp>
-                                <!-- Input -->
                                 <ContainerComp tag="form" class="mt-2 flex flex-col gap-2">
                                         <label for="photo-upload"
-                                                class="block text-sm font-medium text-gray-300 text-center">Subir
-                                                nueva foto</label>
+                                                class="block text-sm font-medium text-gray-300 text-center">Subir nueva
+                                                foto</label>
                                         <input id="photo-upload" type="file" accept="image/*"
                                                 class="w-full file:w-full file:transition-all file:cursor-pointer file:mr-4 file:py-2 file:rounded-lg file:border file:border-white file:text-sm file:font-semibold file:bg-violet-50 file:text-black hover:file:bg-black hover:file:text-white"
-                                                @change="handlePhotoUpload">
+                                                @change="handleCoverPhotoUpload">
                                         <ContainerComp class="flex flex-col gap-2">
-                                                <button type="button" @click="savePhoto"
-                                                        :disabled="(tempPreview === viewedUser?.photoURL || tempPreview === perfilPhotoDefault)"
+                                                <button type="button" @click="saveCoverPhoto"
+                                                        :disabled="!Boolean(tempCoverPhotoPreview) || tempCoverPhotoPreview === viewedUser?.coverPhotoURL || tempCoverPhotoPreview === defaultCoverPhoto"
+                                                        class="w-full py-2 rounded-lg text-sm  font-semibold border disabled:border-gray-500 disabled:opacity-50 disabled:text-gray-500 disabled:cursor-not-allowed"
                                                         :class="{
-                                                                'bg-violet-50 text-black hover:text-white hover:bg-black': (tempPreview !== viewedUser?.photoURL && tempPreview !== perfilPhotoDefault),
-                                                        }"
-                                                        class="w-full py-2 rounded-lg text-sm font-semibold border border-white disabled:opacity-50 disabled:cursor-not-allowed disabled:text-white">
+                                                                'bg-violet-50 text-black hover:text-white hover:bg-black': !!tempCoverPhotoPreview && tempCoverPhotoPreview !== viewedUser?.coverPhotoURL && tempCoverPhotoPreview !== defaultCoverPhoto,
+                                                        }">
                                                         Guardar
                                                 </button>
-                                                <button type="button" @click="cancelPhotoUpload"
+                                                <button type="button" @click="cancelCoverPhotoUpload"
                                                         class="w-full py-2 rounded-lg border border-white text-sm font-semibold bg-violet-50 text-black hover:bg-black hover:text-white">Cancelar</button>
                                         </ContainerComp>
                                 </ContainerComp>
                         </ContainerComp>
-                </div>
-        </Teleport>
+                </template>
+                <!-- PROFILE PHOTO -->
+                <template v-if="modalContent === 'profilePhoto'">
+                        <ContainerComp class="max-w-96 px-2">
+                                <ContainerComp tag="figure" class="aspect-w-1 aspect-h-1">
+                                        <img :src="tempProfilePhotoPreview || (viewedUser?.coverPhotoURL || defaultPerfilPhoto)"
+                                                :alt="viewedUser?.name || 'Foto de perfil del usuario'"
+                                                class="w-full h-full object-cover">
+                                </ContainerComp>
+                                <ContainerComp tag="form" class="mt-2 flex flex-col gap-2">
+                                        <label for="photo-upload"
+                                                class="block text-sm font-medium text-gray-300 text-center">Subir nueva
+                                                foto</label>
+                                        <input id="photo-upload" type="file" accept="image/*"
+                                                class="w-full file:w-full file:transition-all file:cursor-pointer file:mr-4 file:py-2 file:rounded-lg file:border file:border-white file:text-sm file:font-semibold file:bg-violet-50 file:text-black hover:file:bg-black hover:file:text-white"
+                                                @change="handleProfilePhotoUpload">
+                                        <ContainerComp class="flex flex-col gap-2">
+                                                <button type="button" @click="saveProfilePhoto"
+                                                        :disabled="!Boolean(tempProfilePhotoPreview) || tempProfilePhotoPreview === viewedUser?.photoURL || tempProfilePhotoPreview === defaultPerfilPhoto"
+                                                        class="w-full py-2 rounded-lg text-sm  font-semibold border disabled:border-gray-500 disabled:opacity-50 disabled:text-gray-500 disabled:cursor-not-allowed"
+                                                        :class="{
+                                                                'bg-violet-50 text-black hover:text-white hover:bg-black': !!tempProfilePhotoPreview && tempProfilePhotoPreview !== viewedUser?.photoURL && tempProfilePhotoPreview !== defaultPerfilPhoto,
+                                                        }">
+                                                        Guardar
+                                                </button>
+                                                <button type="button" @click="cancelProfilePhotoUpload"
+                                                        class="w-full py-2 rounded-lg border border-white text-sm font-semibold bg-violet-50 text-black hover:bg-black hover:text-white">Cancelar</button>
+                                        </ContainerComp>
+                                </ContainerComp>
+                        </ContainerComp>
+                </template>
+        </Modal>
 </template>

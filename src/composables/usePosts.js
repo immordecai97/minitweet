@@ -59,16 +59,35 @@ const usePosts = () => {
      * Función para obtener todos los posts de la colección
      */
     const fetchPosts = () => {
-        const q = query(postsCollection, orderBy('create_at', 'desc'));
-        onSnapshot(q, async (snapshot) => {
-            const userPromises = snapshot.docs.map(async (doc) => {
-                const post = { id: doc.id, ...doc.data() };
-                const user = await fetchUserById(post.userID);
-                return { ...post, user };
+        return new Promise((resolve, reject) => {
+            const q = query(postsCollection, orderBy('create_at', 'desc'));
+            onSnapshot(q, async (snapshot) => {
+                try {
+                    const userPromises = snapshot.docs.map(async (doc) => {
+                        const post = { id: doc.id, ...doc.data() };
+                        const user = await fetchUserById(post.userID);
+                        return { ...post, user };
+                    });
+                    posts.value = await Promise.all(userPromises);
+                    resolve();
+                } catch (error) {
+                    console.error("Error fetching posts: ", error);
+                    reject(error);
+                }
             });
-            posts.value = await Promise.all(userPromises);
         });
     };
+    // const fetchPosts = () => {
+    //     const q = query(postsCollection, orderBy('create_at', 'desc'));
+    //     onSnapshot(q, async (snapshot) => {
+    //         const userPromises = snapshot.docs.map(async (doc) => {
+    //             const post = { id: doc.id, ...doc.data() };
+    //             const user = await fetchUserById(post.userID);
+    //             return { ...post, user };
+    //         });
+    //         posts.value = await Promise.all(userPromises);
+    //     });
+    // };
 
     return { posts, addPost, fetchPosts, getAPostById, fetchPostsByUserId };
 };

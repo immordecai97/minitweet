@@ -1,32 +1,20 @@
 <script setup>
-
+//------------------------------------------------------------------- COMPOSABLES
 import useAuth from '@/composables/useAuth';
-import { onMounted, onUnmounted } from 'vue';
+//------------------------------------------------------------------- COMPONENTS
+//------------------------------------------------------------------- VUE COMPOSITION API
 import { RouterLink } from 'vue-router';
-
-// const router = useRouter();
-const { user, initAuth, cleanupAuth } = useAuth();
-
-// function handlerLogoutUser() {
-//         logout();
-//         router.push({ name: 'About' });
-// }
-
-onMounted(() => {
-        if (!user.value) {
-                initAuth();
-        }
-});
-
-onUnmounted(() => {
-        cleanupAuth();
-});
-
+const { user } = useAuth();
 </script>
 
 <template>
-        <nav class="borderFinito bg-black w-full">
+        <nav class="borderFinito bg-black w-full text-xs sm:text-sm">
                 <ul class="min-h-16 flex gap-8 justify-center items-center">
+                        <li>
+                                <RouterLink to="/"
+                                        class="transition duration-300 ease-in-out transform hover:scale-110 hover:underline">
+                                        Sobre nosotros</RouterLink>
+                        </li>
                         <template v-if="user">
                                 <li>
                                         <RouterLink to="/feed" title="Feed"
@@ -34,9 +22,9 @@ onUnmounted(() => {
                                                 Feed</RouterLink>
                                 </li>
                                 <li>
-                                        <RouterLink to="/account" title="Cuenta"
+                                        <RouterLink :to="{ name: 'Account', params: { id: user.uid } }" title="Cuenta"
                                                 class="transition duration-300 ease-in-out transform hover:scale-110 hover:underline">
-                                                Cuenta</RouterLink>
+                                                Perfil</RouterLink>
                                 </li>
                                 <li>
                                         <RouterLink disabled title="Chat en construcción" to="/chat"
@@ -45,11 +33,6 @@ onUnmounted(() => {
                                 </li>
                         </template>
                         <template v-else>
-                                <li>
-                                        <RouterLink to="/"
-                                                class="transition duration-300 ease-in-out transform hover:scale-110 hover:underline">
-                                                About</RouterLink>
-                                </li>
                                 <li>
                                         <RouterLink to="/login"
                                                 class="transition duration-300 ease-in-out transform hover:scale-110 hover:underline">

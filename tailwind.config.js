@@ -24,7 +24,7 @@ export default {
     },
   },
   corePlugins: {
-    aspectRatio: false,
+    aspectRatio: true,
   },
   plugins: [
     aspectRatio,

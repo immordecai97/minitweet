@@ -1,20 +1,26 @@
 <script setup>
-import { onMounted } from 'vue';
+//------------------------------------------------------------------- COMPOSABLES
+import useAuth from './composables/useAuth';
+//------------------------------------------------------------------- COMPONENTS
 import NavBar from '@components/NavBarComp.vue'
-import { RouterView, useRouter } from 'vue-router'
 import ContainerComp from '@components/ContainerComp.vue';
+//------------------------------------------------------------------- VUE COMPOSITION API
+import { onMounted } from 'vue';
+import { RouterView, useRouter } from 'vue-router'
 
+const { checkAuth } = useAuth();
 const router = useRouter();
 
 function updateTitle(to) {
   const defaultNameApp = 'Minitweet';
-  const title = to.name || ''
-  document.title = `${defaultNameApp} | ${title}`
+  const title = to.name ? `| ${to.name}` : '';
+  document.title = `${defaultNameApp} ${title}`
 }
 
-onMounted(() => {
+onMounted(async () => {
   try {
     router.afterEach((to) => { updateTitle(to) })
+    await checkAuth();
   } catch (error) {
     console.error(error)
   }

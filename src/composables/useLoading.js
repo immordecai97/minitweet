@@ -1,9 +1,13 @@
 import { ref } from "vue"
 
 const useLoading = () => {
-    const loading = ref(true)
-    const toggleLoading = () => setTimeout(() => loading.value = !loading.value, 300); // Le puse un delay de 500ms para mejorar que se pueda notar la carga
-    const setLoading = (value) => loading.value = value
-    return { loading, toggleLoading, setLoading }
+    const loading = ref(false);
+    const startLoading = () => loading.value = true;
+    const endLoading = () => setTimeout(() => loading.value = false, 600);
+    return {
+        loading,
+        startLoading,
+        endLoading
+    }
 }
 export default useLoading

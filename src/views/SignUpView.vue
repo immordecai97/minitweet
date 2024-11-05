@@ -31,34 +31,34 @@ async function handlerSubmit() {
                         <ContainerComp tag="form" @submit.prevent="handlerSubmit" class="flex-1" action="#">
                                 <ContainerComp class="flex flex-col gap-4 items-center">
                                         <ContainerComp>
-                                                <label for="name" class="hidden">Nombre</label>
+                                                <label for="name" class="sr-only">Nombre</label>
                                                 <input v-model="userData.name" type="text" id="name" name="name"
-                                                        placeholder="name"
-                                                        class="w-full p-2 bg-transparent border-b focus:outline-none focus:border-blue-600 custom-input"
+                                                        placeholder="Nombre"
+                                                        class="custom-input "
                                                         required>
                                         </ContainerComp>
 
                                         <ContainerComp>
-                                                <label for="username" class="hidden">Username</label>
+                                                <label for="username" class="sr-only">Username</label>
                                                 <input v-model="userData.username" type="text" id="username"
-                                                        name="username" placeholder="Username"
-                                                        class="w-full p-2 bg-transparent border-b focus:outline-none focus:border-blue-600 custom-input"
+                                                        name="username" placeholder="Nombre de usuario"
+                                                        class="custom-input"
                                                         required>
                                         </ContainerComp>
 
                                         <ContainerComp>
-                                                <label for="email" class="hidden">Email</label>
+                                                <label for="email" class="sr-only">Email</label>
                                                 <input v-model="userData.email" type="email" id="email" name="email"
-                                                        placeholder="Email"
-                                                        class="w-full p-2 bg-transparent border-b focus:outline-none focus:border-blue-600 custom-input"
+                                                        placeholder="Correo electrónico"
+                                                        class="custom-input"
                                                         required>
                                         </ContainerComp>
 
                                         <ContainerComp>
-                                                <label for="password" class="hidden">Password</label>
+                                                <label for="password" class="sr-only">Password</label>
                                                 <input v-model="userData.password" type="password" id="password"
-                                                        name="password" placeholder="Password"
-                                                        class="w-full p-2 bg-transparent border-b focus:outline-none focus:border-blue-600 custom-input"
+                                                        name="password" placeholder="Contraseña"
+                                                        class="custom-input"
                                                         required>
                                         </ContainerComp>
 

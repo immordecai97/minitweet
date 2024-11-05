@@ -36,61 +36,33 @@ body {
         text-wrap: balance;
 }
 
-/* Estilos para evitar que el autocompletado del navegador sobrescriba los estilos */
-.custom-input:-webkit-autofill,
-.custom-input:-webkit-autofill:hover,
-.custom-input:-webkit-autofill:focus {
-        /* Color del texto */
-        -webkit-text-fill-color: white;
-        /* Fondo transparente */
-        background-color: transparent !important;
-        /* Fondo transparente */
-        box-shadow: 0 0 0px 1000px transparent inset !important;
-        /* Transición para el fondo */
-        transition: background-color 5000s ease-in-out 0s;
-}
-
-/* Estilos para la selección de texto */
-.custom-input::selection {
-        background: rgba(255, 255, 255, 0.3);
-        /* Fondo de la selección */
-        color: white;
-        /* Color del texto de la selección */
-}
-
-.custom-input::-webkit-selection {
-        background: rgba(255, 255, 255, 0.3);
-        /* Fondo de la selección en WebKit */
-        color: white;
-        /* Color del texto de la selección en WebKit */
-}
-
-.custom-input::-moz-selection {
-        background: rgba(255, 255, 255, 0.3);
-        /* Fondo de la selección en Firefox */
-        color: white;
-        /* Color del texto de la selección en Firefox */
-}
-
-/* Estilos para el subrayado de errores ortográficos */
-.custom-input::spelling-error {
-        text-decoration: underline wavy red;
-        /* Subrayado ondulado rojo */
-        text-decoration-color: red;
-        /* Color del subrayado */
-}
-
-.custom-input::grammar-error {
-        text-decoration: underline wavy red;
-        /* Subrayado ondulado rojo */
-        text-decoration-color: red;
-        /* Color del subrayado */
-}
-
 /* CSS de área segura de un dispositivo movil */
 .app-wrapper {
         padding-top: env(safe-area-inset-top); /* Asegura espacio en la parte superior */
         /*padding-right: env(safe-area-inset-right);*/ /* Espacio seguro en el lateral derecho */
         padding-bottom: env(safe-area-inset-bottom); /* Espacio seguro en la parte inferior */
         /*padding-left: env(safe-area-inset-left);*/ /* Espacio seguro en el lateral izquierdo */
+}
+
+.custom-input {
+        @apply w-full p-2 text-white bg-transparent border-b focus:outline-none focus:border-blue-600 bg-zinc-400 bg-opacity-10 rounded-t
+}
+
+/* Estos formateos son para que, cuando el navegador de sugerencias de autocompletado, no cambie el color de fondo de los inputs */
+input:-webkit-autofill {
+        -webkit-box-shadow: 0 0 0 30px #111112 inset !important; /* Cambia el color de fondo */
+        -webkit-text-fill-color: #ffffff !important; /* Cambia el color del texto */
+}
+
+/* Asegúrate de que los estilos se apliquen también en otros navegadores */
+/* Estilos para navegadores basados en Gecko (Firefox) */
+input:-moz-autofill {
+        box-shadow: 0 0 0 30px #111112 inset !important; /* Cambia el color de fondo */
+        -moz-text-fill-color: #ffffff !important; /* Cambia el color del texto */
+}
+
+/* Estilos para navegadores de Microsoft (Internet Explorer, Edge) */
+input:-ms-autofill {
+        box-shadow: 0 0 0 30px #111112 inset !important; /* Cambia el color de fondo */
+        -ms-text-fill-color: #ffffff !important; /* Cambia el color del texto */
 }

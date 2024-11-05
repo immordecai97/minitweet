@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { auth, db } from '@services/firebase';
 import { doc, setDoc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
-import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
+import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, setPersistence, browserLocalPersistence } from 'firebase/auth';
 import useStorage from './useStorage';
 
 const { uploadFile, getFileURL } = useStorage();
@@ -16,7 +16,9 @@ const useAuth = () => {
      */
     const login = async ({ email, password }) => {
         try {
-            await signInWithEmailAndPassword(auth, email, password);
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            user.value = await fetchUserById(userCredential.user.uid);
+            localStorage.setItem('user', JSON.stringify(user.value));
         } catch (error) {
             console.error("Error logging in: ", error.message);
         }
@@ -44,8 +46,9 @@ const useAuth = () => {
                 createdAt: serverTimestamp(),
                 updateAt: serverTimestamp()
             }
-            // Crear documento de usuario en Firestore
             await setDoc(doc(db, 'usersProfiles', userId), { ...newUser });
+            user.value = newUser;
+            localStorage.setItem('user', JSON.stringify(user.value));
         } catch (error) {
             console.error("Error registering: ", error.message);
         }
@@ -57,6 +60,9 @@ const useAuth = () => {
     const logout = async () => {
         try {
             await signOut(auth);
+            cleanupAuth();
+            localStorage.removeItem('user');
+            user.value = null;
         } catch (error) {
             console.error("Error logging out: ", error.message);
         }
@@ -87,6 +93,7 @@ const useAuth = () => {
         try {
             await updateDoc(doc(db, 'usersProfiles', user.value.uid), updatedData);
             user.value = { ...user.value, ...updatedData };
+            localStorage.setItem('user', JSON.stringify(user.value)); // Actualizar en localStorage
         } catch (error) {
             console.error("Error updating user data: ", error.message);
         }
@@ -101,12 +108,32 @@ const useAuth = () => {
         const fileExtension = filePhoto.name.split('.').pop();
         // const fileName = `${filePhoto.name}.${fileExtension}`;
         // const filePath = `users/${user.value.uid}/profilePhotos/${filePhoto.name}`;
-        const filePath = `users/${user.value?.uid}/profilePhotos/profilePhoto.${fileExtension}`;
+        const filePath = `users/${user.value?.uid}/profilePhoto/profilePhoto.${fileExtension}`;
         await uploadFile(filePath, filePhoto);
         const photoURL = await getFileURL(filePath);
         updateUser({ photoURL });
     }
+    const updateCoverPhoto = async (filePhoto) => {
+        const fileExtension = filePhoto.name.split('.').pop();
+        // const fileName = `${filePhoto.name}.${fileExtension}`;
+        // const filePath = `users/${user.value.uid}/profilePhotos/${filePhoto.name}`;
+        const filePath = `users/${user.value?.uid}/coverPhoto/coverPhoto.${fileExtension}`;
+        await uploadFile(filePath, filePhoto);
+        const coverPhotoURL = await getFileURL(filePath);
+        updateUser({ coverPhotoURL });
+    }
 
+    /**
+     * Función para verificar si el usuario está autenticado
+     */
+    const checkAuth = async () => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            user.value = JSON.parse(storedUser);
+        } else {
+            await initAuth();
+        }
+    };
 
     /**
      * Función para inicializar la autenticación
@@ -116,13 +143,24 @@ const useAuth = () => {
     const initAuth = async () => {
         return new Promise((resolve, reject) => {
             try {
-                unsubscribe.value = onAuthStateChanged(auth, async (currentUser) => {
-                    if (currentUser) {
-                        user.value = await fetchUserById(currentUser.uid);
-                    } else {
-                        user.value = null;
+                setPersistence(auth, browserLocalPersistence).then(() => {
+                    const storedUser = localStorage.getItem('user');
+                    if (storedUser) {
+                        user.value = JSON.parse(storedUser);
                     }
-                    resolve();
+                    unsubscribe.value = onAuthStateChanged(auth, async (currentUser) => {
+                        if (currentUser) {
+                            user.value = await fetchUserById(currentUser.uid);
+                            localStorage.setItem('user', JSON.stringify(user.value)); // Guardar en localStorage
+                        } else {
+                            user.value = null;
+                            localStorage.removeItem('user'); // Eliminar de localStorage
+                        }
+                        resolve();
+                    });
+                }).catch((error) => {
+                    console.error("Error setting persistence: ", error.message);
+                    reject(error);
                 });
             } catch (error) {
                 console.error("Error initializing auth: ", error.message);
@@ -140,7 +178,19 @@ const useAuth = () => {
         }
     };
 
-    return { user, login, register, logout, updateUser, fetchUserById, initAuth, cleanupAuth, updateProfilePhoto };
+    return {
+        user,
+        login,
+        register,
+        logout,
+        updateUser,
+        fetchUserById,
+        checkAuth,
+        //  initAuth,
+        cleanupAuth,
+        updateProfilePhoto,
+        updateCoverPhoto
+    };
 };
 
 export default useAuth;

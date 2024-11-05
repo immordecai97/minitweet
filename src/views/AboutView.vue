@@ -7,13 +7,13 @@ import TitleComp from '@/components/TitleComp.vue';
   <ContainerComp class="flex flex-col gap-6 max-w-xl pb-20 overflow-y-auto">
     <ContainerComp tag="section" class="flex flex-col gap-4">
        <TitleComp text="Sobre Minitweet" />
-      <ContainerComp class="flex flex-col gap-4 sm:flex-row">
+      <ContainerComp class="flex flex-col gap-4">
         <ContainerComp tag="p"
           text="Minitweet es una red social de microblogging que te permite compartir tus pensamientos, ideas y opiniones en solo 280 caracteres."
-          class="text-pretty text-center" />
+          class="text-pretty" />
         <ContainerComp tag="p"
           text="Creada por un entusiasta de la tecnología, Minitweet es la plataforma perfecta para aquellos que buscan una experiencia de redes sociales más simple y directa."
-          class="text-pretty text-center" />
+          class="text-pretty" />
       </ContainerComp>
       <ContainerComp tag="section" class="flex flex-col gap-4">
         <ContainerComp tag="h2" text="(Modo en línea: sujeto a cambios)" class="font-bold text-center text-xl text-orange-400 text-pretty" />
