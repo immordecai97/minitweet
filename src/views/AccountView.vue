@@ -143,7 +143,6 @@ onMounted(async () => {
 });
 
 onBeforeUnmount(() => closeModal());
-
 </script>
 
 <template>

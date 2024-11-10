@@ -2,7 +2,6 @@
 //------------------------------------------------------------------- COMPOSABLES
 import useAuth from '@/composables/useAuth.js';
 import useLoading from '@/composables/useLoading';
-
 //------------------------------------------------------------------- COMPONENTS
 import ContainerComp from '@/components/ContainerComp.vue';
 //------------------------------------------------------------------- VUE COMPOSITION API
@@ -14,7 +13,6 @@ import { getPrivateMessages, savePrivateMessage } from '@/services/privateChat.s
 const route = useRoute();
 const { user, fetchUserById } = useAuth();
 const { loading, startLoading, endLoading } = useLoading();
-
 const userToChat = ref(null);
 const messages = ref([]);
 // const sendingMessage = ref(false);
@@ -54,15 +52,11 @@ onMounted(async () => {
         endLoading();
     }
 });
-
 </script>
 
-
-
-
-
 <template>
-    <div class="grid grid-rows-[auto_1fr_auto] h-[calc(100vh-74px)]">
+    <div class="grid grid-rows-[auto_1fr_auto] h-[calc(100vh-64px)]">
+    <!-- <div class="grid grid-rows-[auto_1fr_auto] h-[calc(100vh-74px)]"> -->
         <!-- header -->
         <ContainerComp class="max-w-96 p-4 bg-black flex items-center gap-4 shadow">
             <!-- Imagen -->
@@ -103,7 +97,6 @@ onMounted(async () => {
                 <p class="text-center">Loading</p>
             </div>
         </template>
-
         <!-- input -->
         <ContainerComp class="max-w-96 flex gap-1">
             <div className="space-y-2 w-full">
