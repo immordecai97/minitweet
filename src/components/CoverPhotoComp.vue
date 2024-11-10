@@ -22,7 +22,7 @@ defineProps({
 
 <template>
     <ContainerComp tag="figure" class="aspect-w-16 aspect-h-9 overflow-hidden z-index-10">
-        <img v-if="isOwnAccount" :src="src || defaultCoverPhotoURL" :alt="alt || defaultAlt" class="object-contain" :class="{ 'cursor-pointer': !!onClick }" v-on="{ click: onClick }">
-        <img v-else :src="src || defaultCoverPhotoURL" :alt="alt || defaultAlt" class="object-contain">
+        <img v-if="isOwnAccount" :src="src || defaultCoverPhotoURL" :alt="alt || defaultAlt" class="object-cover" :class="{ 'cursor-pointer': !!onClick }" v-on="{ click: onClick }">
+        <img v-else :src="src || defaultCoverPhotoURL" :alt="alt || defaultAlt" class="object-cover">
     </ContainerComp>
 </template>

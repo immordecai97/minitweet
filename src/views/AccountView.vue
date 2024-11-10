@@ -224,7 +224,7 @@ onBeforeUnmount(() => closeModal());
                                 <ContainerComp tag="figure" class="max-w-96 aspect-w-16 aspect-h-9">
                                         <img :src="tempCoverPhotoPreview || (viewedUser?.coverPhotoURL || defaultCoverPhoto)"
                                                 :alt="viewedUser?.name || 'Foto de perfil del usuario'"
-                                                class="object-contain">
+                                                class="object-cover">
                                 </ContainerComp>
                                 <ContainerComp tag="form" class="mt-2 flex flex-col gap-2">
                                         <label for="photo-upload"
