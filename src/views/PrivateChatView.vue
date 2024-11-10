@@ -55,7 +55,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="grid grid-rows-[auto_1fr_auto] h-[calc(100vh-66px)]">
+    <div class="grid grid-rows-[auto_1fr_auto] h-[calc(100vh-66px)] overflow-y-auto">
     <!-- <div class="grid grid-rows-[auto_1fr_auto] h-[calc(100vh-74px)]"> -->
         <!-- header -->
         <ContainerComp class="max-w-96 p-4 bg-black flex items-center gap-4 shadow">
