@@ -55,7 +55,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="grid grid-rows-[auto_1fr_auto] h-[calc(100vh-64px)]">
+    <div class="grid grid-rows-[auto_1fr_auto] h-[calc(100vh-66px)]">
     <!-- <div class="grid grid-rows-[auto_1fr_auto] h-[calc(100vh-74px)]"> -->
         <!-- header -->
         <ContainerComp class="max-w-96 p-4 bg-black flex items-center gap-4 shadow">
@@ -107,7 +107,7 @@ onMounted(async () => {
                         placeholder="Mensaje" type="text" />
                     <button
                         class="bg-gray-600 bg-opacity-40 inline-flex items-center rounded-e-lg border border-input px-3 text-sm text-foreground hover:bg-accent hover:text-foreground focus:z-10 focus-visible:border-0 focus-visible:outline-none focus-visible:ring-0  focus-visible:ring-offset-1">
-                        Send
+                        Enviar
                     </button>
                 </form>
             </div>
