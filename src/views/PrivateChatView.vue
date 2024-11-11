@@ -25,16 +25,6 @@ async function sendMessage() {
     } catch (error) {
         console.log(error.message);
     }
-
-    // console.log('enviando mensajito')
-    // try {
-    //     sendingMessage.value = true;
-    //     // Send message
-    // } catch (error) {
-    //     console.log(error);
-    // } finally {
-    //     sendingMessage.value = false;
-    // }
 }
 
 onMounted(async () => {
@@ -55,8 +45,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="grid grid-rows-[auto_1fr] h-[calc(100vh-66px)] overflow-y-auto">
-        <!-- <div class="grid grid-rows-[auto_1fr_auto] h-[calc(100vh-74px)]"> -->
+    <div class="grid grid-rows-[auto_1fr] h-[calc(100vh-104px)]">
         <!-- header -->
         <ContainerComp class="max-w-96 p-4 bg-black flex items-center gap-4 shadow">
             <!-- Imagen -->
@@ -67,7 +56,8 @@ onMounted(async () => {
         </ContainerComp>
         <!-- chat -->
         <template v-if="!loading">
-            <ContainerComp v-if="messages.length" tag="ul" class="p-4 flex flex-col items-start gap-2 overflow-y-auto">
+            <ContainerComp v-if="messages.length" tag="ul"
+                class="p-4 flex flex-col items-start gap-2 overflow-y-scroll">
                 <li v-for="message in messages" :key="message.id"
                     class="bg-opacity-30 text-white p-3 rounded-lg max-w-xs" :class="{
                         'bg-blue-500 self-end': message.userID === user.uid,
@@ -82,15 +72,6 @@ onMounted(async () => {
             <ContainerComp v-else class="p-4 flex flex-col items-center justify-center">
                 <p class="text-gray-400 text-xs">No hay mensajes...</p>
             </ContainerComp>
-
-            <!-- <ContainerComp class="bg-black p-4 flex flex-col gap-2 overflow-y-auto">
-                
-                <div class="flex items-start justify-end">
-                    <div class="bg-gray-500 bg-opacity-30 p-3 rounded-lg max-w-xs">
-                        <p>I'm good, thanks! How about you?</p>
-                    </div>
-                </div>
-            </ContainerComp> -->
         </template>
         <template v-else>
             <div class="flex flex-col justify-center">
@@ -116,7 +97,8 @@ onMounted(async () => {
     <Teleport to="#barTop" v-if="!loading">
         <ContainerComp class="max-w-96 flex gap-1">
             <div className="space-y-2 w-full">
-                <form @submit.prevent="sendMessage" className="flex rounded-lg shadow-sm shadow-black/[.04]">
+                <form @submit.prevent="sendMessage"
+                    className="flex rounded-lg shadow-sm shadow-black/[.04] absolute bottom-1 w-full px-2">
                     <label for="message" class="sr-only">Mensaje</label>
                     <input id="message" v-model="newMessage"
                         class="bg-gray-600 bg-opacity-40 flex h-9 w-full rounded-lg border border-input px-3 py-2 text-sm text-foreground shadow-black/[.04] placeholder:text-muted-foreground/70 focus-visible:border-0 focus-visible:outline-none focus-visible:ring-0  focus-visible:ring-offset-1 -me-px flex-1 rounded-e-none focus-visible:z-10"
