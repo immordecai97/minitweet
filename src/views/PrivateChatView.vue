@@ -55,8 +55,8 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="grid grid-rows-[auto_1fr_auto] h-[calc(100vh-66px)] overflow-y-auto">
-    <!-- <div class="grid grid-rows-[auto_1fr_auto] h-[calc(100vh-74px)]"> -->
+    <div class="grid grid-rows-[auto_1fr] h-[calc(100vh-66px)] overflow-y-auto">
+        <!-- <div class="grid grid-rows-[auto_1fr_auto] h-[calc(100vh-74px)]"> -->
         <!-- header -->
         <ContainerComp class="max-w-96 p-4 bg-black flex items-center gap-4 shadow">
             <!-- Imagen -->
@@ -98,6 +98,22 @@ onMounted(async () => {
             </div>
         </template>
         <!-- input -->
+        <!-- <ContainerComp class="max-w-96 flex gap-1">
+            <div className="space-y-2 w-full">
+                <form @submit.prevent="sendMessage" className="flex rounded-lg shadow-sm shadow-black/[.04]">
+                    <label for="message" class="sr-only">Mensaje</label>
+                    <input id="message" v-model="newMessage"
+                        class="bg-gray-600 bg-opacity-40 flex h-9 w-full rounded-lg border border-input px-3 py-2 text-sm text-foreground shadow-black/[.04] placeholder:text-muted-foreground/70 focus-visible:border-0 focus-visible:outline-none focus-visible:ring-0  focus-visible:ring-offset-1 -me-px flex-1 rounded-e-none focus-visible:z-10"
+                        placeholder="Mensaje" type="text" />
+                    <button
+                        class="bg-gray-600 bg-opacity-40 inline-flex items-center rounded-e-lg border border-input px-3 text-sm text-foreground hover:bg-accent hover:text-foreground focus:z-10 focus-visible:border-0 focus-visible:outline-none focus-visible:ring-0  focus-visible:ring-offset-1">
+                        Enviar
+                    </button>
+                </form>
+            </div>
+        </ContainerComp> -->
+    </div>
+    <Teleport to="#barTop" v-if="!loading">
         <ContainerComp class="max-w-96 flex gap-1">
             <div className="space-y-2 w-full">
                 <form @submit.prevent="sendMessage" className="flex rounded-lg shadow-sm shadow-black/[.04]">
@@ -112,5 +128,5 @@ onMounted(async () => {
                 </form>
             </div>
         </ContainerComp>
-    </div>
+    </Teleport>
 </template>

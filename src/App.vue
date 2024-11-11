@@ -55,7 +55,7 @@ onBeforeUnmount(() => {
     </ContainerComp>
 
     <ContainerComp class="fixed bottom-0 left-0 right-0 app-wrapper w-full ">
-      <ContainerComp id="btnPost" class="relative mx-auto w-full max-w-96">
+      <ContainerComp id="barTop" class="relative mx-auto w-full max-w-96">
       </ContainerComp>
       <NavBar />
     </ContainerComp>

@@ -70,7 +70,7 @@ onBeforeUnmount(() => closeModal());
 
     </div>
 
-    <Teleport to="#btnPost" v-if="!loading">
+    <Teleport to="#barTop" v-if="!loading">
         <button @click="openModal"
             class="absolute bottom-1 right-0 bg-white text-black px-4 py-2 rounded-lg transition border border-transparent hover:bg-black hover:border-white hover:text-white">
             Publicar
