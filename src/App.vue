@@ -5,8 +5,9 @@ import useAuth from './composables/useAuth';
 import NavBar from '@components/NavBarComp.vue'
 import ContainerComp from '@components/ContainerComp.vue';
 //------------------------------------------------------------------- VUE COMPOSITION API
-import { onMounted } from 'vue';
+import { onBeforeUnmount, onMounted } from 'vue';
 import { RouterView, useRouter } from 'vue-router'
+import { setViewportHeight } from './utils/viewportHeight';
 
 const { checkAuth } = useAuth();
 const router = useRouter();
@@ -19,11 +20,17 @@ function updateTitle(to) {
 
 onMounted(async () => {
   try {
+    setViewportHeight()
+    window.addEventListener('resize', setViewportHeight)
     router.afterEach((to) => { updateTitle(to) })
     await checkAuth();
   } catch (error) {
     console.error(error)
   }
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', setViewportHeight)
 })
 
 /**
@@ -42,7 +49,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="grid grid-rows-[1fr] h-[calc(100vh-65px)] text-slate-200 px-2">
+  <div class="grid grid-rows-[1fr] h-[calc(100vh-65px)] text-slate-200 px-2 fullHeight">
     <ContainerComp tag="main" class="max-w-96">
       <RouterView />
     </ContainerComp>
@@ -54,3 +61,9 @@ onMounted(async () => {
     </ContainerComp>
   </div>
 </template>
+
+<style>
+.fullHeight {
+  height: calc(var(--vh, 1vh) * 100);
+}
+</style>

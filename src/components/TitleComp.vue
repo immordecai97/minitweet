@@ -23,8 +23,14 @@ defineProps({
         'text-xl': tag === 'h4',
         'text-lg': tag === 'h5',
         'text-base': tag === 'h6',
-        'sticky top-0 z-10': stickyTop === true
+        'sticky top-0 z-index-900': stickyTop === true
     }">
         {{ text }}
     </component>
 </template>
+
+<style scope>
+.z-index-900 {
+    z-index: 900;
+}
+</style>
