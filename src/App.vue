@@ -62,8 +62,8 @@ onBeforeUnmount(() => {
   </div>
 </template>
 
-<style>
+<!-- <style>
 .fullHeight {
   height: calc(var(--vh, 1vh) * 100);
 }
-</style>
+</style> -->
