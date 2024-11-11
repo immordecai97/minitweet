@@ -70,7 +70,7 @@ onUnmounted(() => {
 
 <template>
     <!-- <div class="grid grid-rows-[auto_1fr] h-[calc(100vh-104px)]"> -->
-    <div class="grid grid-rows-[auto_1fr] h-cal">
+    <div class="grid grid-rows-[auto_1fr] custom-height">
         <!-- header -->
         <ContainerComp class="max-w-96 p-4 bg-black flex items-center gap-4 shadow">
             <ProfilePhotoComp :src="userToChat?.photoURL" :alt="userToChat?.name" width="w-12" height="h-12" />
@@ -123,7 +123,7 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
-.h-cal{
-    height: calc(100vh - 104px);
+.custom-height {
+    height: calc((var(--vh, 1vh) * 100) - 104px);
 }
 </style>
