@@ -10,7 +10,7 @@ import { useRoute } from 'vue-router';
 import ProfilePhotoComp from '@/components/ProfilePhotoComp.vue';
 import { getPrivateMessages, savePrivateMessage } from '@/services/privateChat.service';
 
-import { setViewportHeight } from '@/utils/viewportHeight';
+// import { setViewportHeight } from '@/utils/viewportHeight';
 
 
 const route = useRoute();
@@ -42,8 +42,8 @@ function scrollToBottom() {
 }
 
 onMounted(async () => {
-    setViewportHeight()
-    window.addEventListener('resize', setViewportHeight)
+    // setViewportHeight()
+    // window.addEventListener('resize', setViewportHeight)
     startLoading();
     const { id } = route.params;
     userToChat.value = await fetchUserById(id);
@@ -69,7 +69,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div class="grid grid-rows-[auto_1fr] h-[calc(100vh-104px)] fullHeight">
+    <div class="grid grid-rows-[auto_1fr] h-[calc(100vh-104px)]">
         <!-- header -->
         <ContainerComp class="max-w-96 p-4 bg-black flex items-center gap-4 shadow">
             <ProfilePhotoComp :src="userToChat?.photoURL" :alt="userToChat?.name" width="w-12" height="h-12" />

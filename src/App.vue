@@ -5,9 +5,9 @@ import useAuth from './composables/useAuth';
 import NavBar from '@components/NavBarComp.vue'
 import ContainerComp from '@components/ContainerComp.vue';
 //------------------------------------------------------------------- VUE COMPOSITION API
-import { onBeforeUnmount, onMounted } from 'vue';
+import { onMounted } from 'vue';
 import { RouterView, useRouter } from 'vue-router'
-import { setViewportHeight } from './utils/viewportHeight';
+// import { setViewportHeight } from './utils/viewportHeight';
 
 const { checkAuth } = useAuth();
 const router = useRouter();
@@ -20,8 +20,8 @@ function updateTitle(to) {
 
 onMounted(async () => {
   try {
-    setViewportHeight()
-    window.addEventListener('resize', setViewportHeight)
+    // setViewportHeight()
+    // window.addEventListener('resize', setViewportHeight)
     router.afterEach((to) => { updateTitle(to) })
     await checkAuth();
   } catch (error) {
@@ -29,9 +29,9 @@ onMounted(async () => {
   }
 })
 
-onBeforeUnmount(() => {
-  window.removeEventListener('resize', setViewportHeight)
-})
+// onBeforeUnmount(() => {
+//   window.removeEventListener('resize', setViewportHeight)
+// })
 
 /**
  * TODO: Agregar loaders o skeletons                                                ----Listo----
@@ -49,7 +49,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="grid grid-rows-[1fr] h-[calc(100vh-65px)] text-slate-200 px-2 fullHeight">
+  <div class="grid grid-rows-[1fr] h-[calc(100vh-65px)] text-slate-200 px-2">
     <ContainerComp tag="main" class="max-w-96">
       <RouterView />
     </ContainerComp>
