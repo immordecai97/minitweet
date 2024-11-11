@@ -69,7 +69,8 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div class="grid grid-rows-[auto_1fr] h-[calc(100vh-104px)]">
+    <!-- <div class="grid grid-rows-[auto_1fr] h-[calc(100vh-104px)]"> -->
+    <div class="grid grid-rows-[auto_1fr] h-cal">
         <!-- header -->
         <ContainerComp class="max-w-96 p-4 bg-black flex items-center gap-4 shadow">
             <ProfilePhotoComp :src="userToChat?.photoURL" :alt="userToChat?.name" width="w-12" height="h-12" />
@@ -120,3 +121,9 @@ onUnmounted(() => {
         </ContainerComp>
     </Teleport>
 </template>
+
+<style scoped>
+.h-cal{
+    height: calc(100vh - 104px);
+}
+</style>
