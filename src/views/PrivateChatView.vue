@@ -34,7 +34,7 @@ function scrollToBottom() {
         // console.log('scrollTop:', messagesContainer.value.scrollTop); // -> Descripción: Representa la cantidad de píxeles que el contenido de un elemento ha sido desplazado hacia arriba. -> Uso: Se utiliza para obtener o establecer la posición de desplazamiento vertical de un elemento.
         // console.log('scrollHeight:', messagesContainer.value.scrollHeight); // -> Descripción: Representa la altura total de un elemento, incluido el contenido que no es visible debido al desbordamiento. -> Uso: Se utiliza para obtener la altura total de un elemento, incluido el contenido que no es visible debido al desbordamiento.
         // console.log('clientHeight:', messagesContainer.value.clientHeight); // -> Descripción: Representa la altura de un elemento, incluido el relleno, pero sin bordes ni barras de desplazamiento. -> Uso: Se utiliza para obtener la altura de un elemento, incluido el relleno, pero sin bordes ni barras de desplazamiento.
-        messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+        messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight + 100;
     }
 }
 
