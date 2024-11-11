@@ -70,7 +70,7 @@ onUnmounted(() => {
 
 <template>
     <!-- <div class="grid grid-rows-[auto_1fr] h-[calc(100vh-104px)]"> -->
-    <div class="grid grid-rows-[auto_1fr] custom-height">
+    <div class="grid grid-rows-[auto_1fr] custom-height app-wrapper">
         <!-- header -->
         <ContainerComp class="max-w-96 p-4 bg-black flex items-center gap-4 shadow">
             <ProfilePhotoComp :src="userToChat?.photoURL" :alt="userToChat?.name" width="w-12" height="h-12" />
