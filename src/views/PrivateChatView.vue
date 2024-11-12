@@ -81,9 +81,9 @@ onUnmounted(() => {
             <ul ref="messagesContainer" class="p-4 flex flex-col items-start gap-2 overflow-y-scroll">
                 <template v-if="messages.length">
                     <li v-for="message in messages" :key="message.id"
-                        class="bg-opacity-30 text-white p-3 rounded-lg max-w-xs" :class="{
-                            'bg-blue-500 self-end': message.userID === user.uid,
-                            'bg-gray-500': message.userID !== user.uid
+                        class="text-white p-3 max-w-xs message-bubble" :class="{
+                            'self-end rounded-l-lg rounded-br-lg sent': message.userID === user.uid,
+                            'rounded-r-lg rounded-bl-lg received': message.userID !== user.uid
                         }">
                         <p>{{ message.message }}</p>
                     </li>
@@ -123,10 +123,43 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
+/* dvh -> Dinamic viewport height */
 .custom-height {
     height: calc(100dvh - 105px);
 }
-/* .custom-height {
-    height: calc((var(--vh, 1vh) * 100) - 104px);
-} */
+
+.message-bubble {
+    position: relative;
+    padding: 10px;
+}
+
+.received{
+    background-color: #303133;
+}
+
+.received::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -10px;
+    width: 0;
+    height: 0;
+    border-bottom: 10px solid transparent;
+    border-right: 16px solid #303133;    
+}
+
+.sent{
+    background-color: #06305c;
+}
+
+.sent::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -10px;
+    width: 0;
+    height: 0;
+    border-bottom: 10px solid transparent;
+    border-left: 16px solid #06305c;    
+}
 </style>
