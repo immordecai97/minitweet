@@ -14,7 +14,7 @@ import { getPrivateMessages, savePrivateMessage } from '@/services/privateChat.s
 
 
 const route = useRoute();
-const { user, fetchUserById } = useAuth();
+const { user, getUserById } = useAuth();
 const { loading, startLoading, endLoading } = useLoading();
 const userToChat = ref(null);
 const messages = ref([]);
@@ -46,7 +46,7 @@ onMounted(async () => {
     // window.addEventListener('resize', setViewportHeight)
     startLoading();
     const { id } = route.params;
-    userToChat.value = await fetchUserById(id);
+    userToChat.value = await getUserById(id);
 
     unsubscribe.value = getPrivateMessages(
         user.value.uid,

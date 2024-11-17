@@ -74,6 +74,9 @@ input:-ms-autofill {
 .z-index-20{
         z-index: 20;
 }
+.z-index-1000{
+        z-index: 1000;
+}
 
 .fullHeight {
         height: calc(var(--vh, 1vh) * 100);

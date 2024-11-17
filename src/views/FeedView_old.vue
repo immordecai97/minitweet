@@ -1,6 +1,6 @@
 <script setup>
 //------------------------------------------------------------------- COMPOSABLES
-import usePosts from '@/composables/usePosts';
+import usePosts from '@composables/usePosts';
 import useLoading from '@/composables/useLoading';
 import useAuth from '@composables/useAuth';
 import useModal from '@/composables/useModal'
@@ -11,75 +11,62 @@ import FeedSkeleton from '@/components/skeletons/FeedSkeleton.vue';
 import ContainerComp from '@components/ContainerComp.vue';
 import Modal from '@components/ModalComp.vue';
 //------------------------------------------------------------------- VUE COMPOSITION API
-import { onMounted, onBeforeUnmount, ref } from 'vue';
+import { onMounted, ref, onBeforeUnmount } from 'vue';
 
-//------------------------------------------------------------------- USE COMPOSABLES
-const { user } = useAuth();
-const { postsList, unsubscribe, getAllPosts, createNewPost } = usePosts();
-const { loading, startLoading, endLoading } = useLoading();
 const { openModal, closeModal } = useModal();
-
-//------------------------------------------------------------------- DATA
-const newPost = ref({
-    userUID: user.value.uid,
+const { loading, startLoading, endLoading } = useLoading();
+const { user } = useAuth();
+console.log(user.value);
+const { posts, fetchPosts, addPost,
+    // addCommentToPost, fetchCommentsByPostId
+} = usePosts();
+const post = ref({
+    userID: user.value.uid,
     title: '',
     body: ''
 });
-// const unsubscribe = ref(null);
 
-//------------------------------------------------------------------- METHODS
 async function handlerSubmit() {
-    try {
-        await createNewPost(newPost.value);
-        newPost.value = {
-            userUID: user.value.uid,
-            title: '',
-            body: ''
-        };
-    } catch (error) {
-        console.error(error.message);
-        
-    }
-    // await createNewPost(newPost.value);
-    // newPost.value = {
-    //     userID: newPost.value.uid,
-    //     title: '',
-    //     body: ''
-    // };
-    closeModal();
-}
-
-function cancelNewPost() {
-    newPost.value = {
-        userID: user.value.uid,
+    await addPost({ ...post.value });
+    post.value = {
+        userID: post.value.uid,
         title: '',
         body: ''
     };
     closeModal();
 }
 
-//------------------------------------------------------------------- LIFECYCLE
-onMounted(() => {
-    startLoading();
-    getAllPosts((posts) => postsList.value = posts);
-    endLoading();
-});
+function cancelNewPost() {
+    post.value = {
+        userID: post.value.uid,
+        title: '',
+        body: ''
+    };
+    closeModal();
+}
 
-onBeforeUnmount(() => {
-    if(typeof unsubscribe.value === 'function') {
-        unsubscribe.value();
+onMounted(async () => {
+    try {
+        startLoading();
+        console.log('fetching posts...');
+        await fetchPosts();
+        console.log('posts fetched');
+    } catch (error) {
+        console.error(error);
+    } finally {
+        endLoading();
     }
 });
+
+onBeforeUnmount(() => closeModal());
 </script>
 
 <template>
     <div class="grid grid-rows-[1fr] h-[calc(100vh-64px)] overflow-y-auto">
-        <template v-if="!loading && postsList.length">
-            <ContainerComp class="flex-1 flex flex-col" v-if="postsList.length">
+        <template v-if="!loading">
+            <ContainerComp class="flex-1 flex flex-col" v-if="posts.length">
                 <TitleComp text="Feed" :stickyTop="true" />
-                <template v-if="postsList.length">
-                    <PostList :posts="postsList" />
-                </template>
+                <PostList :posts="posts" />
             </ContainerComp>
         </template>
         <template v-else>
@@ -99,9 +86,9 @@ onBeforeUnmount(() => {
         <ContainerComp class="bg-black rounded-lg p-4 max-w-md">
             <form action="#" @submit.prevent="handlerSubmit()" class="flex flex-col gap-4">
                 <label for="title" class="sr-only">Título</label>
-                <input v-model="newPost.title" type="text" placeholder="Título" class="custom-input">
+                <input v-model="post.title" type="text" placeholder="Título" class="custom-input">
                 <label for="body" class="sr-only">Contenido</label>
-                <textarea v-model="newPost.body" placeholder="Contenido" required
+                <textarea v-model="post.body" placeholder="Contenido" required
                     class="custom-input resize-none"></textarea>
                 <ContainerComp class="flex flex-col gap-2">
                     <button type="submit"

@@ -18,7 +18,7 @@ const handleClick = computed(() => props.fn || closeModal);
 <template>
     <Teleport to="#modal" v-if="modal">
         <div @click.self="handleClick"
-            class="fixed inset-0 bg-black bg-opacity-60 backdrop-filter backdrop-blur-sm flex justify-center items-center z-50">
+            class="fixed inset-0 bg-black bg-opacity-60 backdrop-filter backdrop-blur-sm flex justify-center items-center z-index-1000">
             <slot></slot>
         </div>
     </Teleport>

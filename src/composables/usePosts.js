@@ -1,95 +1,88 @@
 import { ref } from 'vue';
-import { db } from '@/services/firebase';
-import useAuth from '@composables/useAuth';
-import { collection, onSnapshot, getDocs, query, where, serverTimestamp, getDoc, doc, addDoc, orderBy } from 'firebase/firestore';
-
-const { fetchUserById } = useAuth();
-const posts = ref([]);
-const postsCollection = collection(db, 'posts');
+import { getAllPostFromFirestore, createNewPostOnFirestore, getAllPostByUserUIDFromFirestore, getPostByIdFromFirestore, updatePostOnFirestore } from '@/services/post.service';
 
 const usePosts = () => {
+    const postsList = ref([]);
+    const unsubscribe = ref(null);
 
     /**
-     * Función para agregar un nuevo post/tweet
-     * @param {Object} postContent 
+     * Función para obtener todos los posts de Firestore ordenados por fecha de creación,
+     * de forma descendente y en tiempo real
+     * @param {Function} callback 
+     * @returns 
      */
-    const addPost = async (postContent) => {
+    function getAllPosts(callback) {
         try {
-            const { userID, title, body } = postContent;
-            await addDoc(postsCollection, {
-                userID,
-                title,
-                body,
-                create_at: serverTimestamp()
-            });
-            fetchPosts();
+            const unsubscribe = getAllPostFromFirestore(callback);
+            return unsubscribe;
+        } catch (error) {
+            console.error("Error getting documents: ", error);
+
+        }
+    }
+
+    /**
+     * Función para agregar un nuevo post/tweet en Firestore
+     * @param {Object} newPost 
+     */
+    async function createNewPost(newPost) {
+        try {
+            await createNewPostOnFirestore(newPost);
         } catch (error) {
             console.error("Error adding document: ", error);
         }
-    };
+    }
 
     /**
-     * Función para obtener todos los posts de un usuarios según su ID
+     * Función para obtener todos los posts de un usuario por su UID
      * @param {String} userId 
+     * @returns {Array} userPosts
      */
-    const fetchPostsByUserId = async (userId) => {
-        const q = query(postsCollection, where('userID', '==', userId), orderBy('create_at', 'desc'));
-        const querySnapshot = await getDocs(q);
-        const userPosts = [];
-        querySnapshot.forEach((doc) => {
-            userPosts.push({ ...doc.data() });
-        });
-        const user = await fetchUserById(userId);
-        const postsToShow = userPosts.map(post => ({ ...post, user }));
-        posts.value = postsToShow;
-    };
+    function getAllPostsByUserUID(userId) {
+        try {
+            const userPosts = getAllPostByUserUIDFromFirestore(userId);
+            return userPosts;
+        } catch (error) {
+            console.error("Error getting documents: ", error);
+        }
+    }
 
     /**
      * Función para obtener un post por su ID
-     * Retorna un objeto con los datos del post
-     * @param {String} postId 
-     * @returns {Object}
+     * @param {String} postID 
+     * @returns 
      */
-    const getAPostById = async (postId) => {
-        const docRef = await getDoc(doc(db, 'posts', postId));
-        return docRef.data();
-    };
+    async function getPostByID(postID) {
+        try {
+            const post = await getPostByIdFromFirestore(postID);
+            return post;
+        } catch (error) {
+            console.error("Error getting document: ", error);
+        }
+    }
 
     /**
-     * Función para obtener todos los posts de la colección
+     * Función para actualizar un post por su ID
+     * @param {String} postID 
+     * @param {String} updatedPost 
      */
-    const fetchPosts = () => {
-        return new Promise((resolve, reject) => {
-            const q = query(postsCollection, orderBy('create_at', 'desc'));
-            onSnapshot(q, async (snapshot) => {
-                try {
-                    const userPromises = snapshot.docs.map(async (doc) => {
-                        const post = { id: doc.id, ...doc.data() };
-                        const user = await fetchUserById(post.userID);
-                        return { ...post, user };
-                    });
-                    posts.value = await Promise.all(userPromises);
-                    resolve();
-                } catch (error) {
-                    console.error("Error fetching posts: ", error);
-                    reject(error);
-                }
-            });
-        });
-    };
-    // const fetchPosts = () => {
-    //     const q = query(postsCollection, orderBy('create_at', 'desc'));
-    //     onSnapshot(q, async (snapshot) => {
-    //         const userPromises = snapshot.docs.map(async (doc) => {
-    //             const post = { id: doc.id, ...doc.data() };
-    //             const user = await fetchUserById(post.userID);
-    //             return { ...post, user };
-    //         });
-    //         posts.value = await Promise.all(userPromises);
-    //     });
-    // };
+    async function updatePost(postID, updatedPost) {
+        try {
+            await updatePostOnFirestore(postID, updatedPost);
+        } catch (error) {
+            console.error("Error updating document: ", error);
+        }
+    }
 
-    return { posts, addPost, fetchPosts, getAPostById, fetchPostsByUserId };
+    return {
+        postsList,
+        unsubscribe,
+        getAllPosts,
+        createNewPost,
+        getAllPostsByUserUID,
+        getPostByID,
+        updatePost,
+    };
 };
 
 export default usePosts;

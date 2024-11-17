@@ -1,7 +1,6 @@
 import { ref } from 'vue';
-import { db } from '@services/firebase';
+import { db } from '@/services/firebase.service';
 import { addDoc, collection, getDocs, serverTimestamp } from 'firebase/firestore';
-import { de } from 'date-fns/locale';
 
 const useChat = () => {
     const messages = ref([]);

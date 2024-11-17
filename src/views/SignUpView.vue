@@ -1,32 +1,40 @@
 <script setup>
 import ContainerComp from '@/components/ContainerComp.vue';
 import { ref } from 'vue';
-import useAuth from '@composables/useAuth';
 import { RouterLink, useRouter } from 'vue-router';
+import useAuth from '@composables/useAuth';
 import TitleComp from '@/components/TitleComp.vue';
+import LoaderComp from '@/components/skeletons/LoaderComp.vue';
+import useLoading from '@/composables/useLoading';
 
 const router = useRouter();
+const { registerUser } = useAuth();
+const { loading, startLoading, endLoading } = useLoading();
+
 const userData = ref({
         name: '',
         username: '',
         email: '',
         password: ''
 })
-const { register } = useAuth();
 
 async function handlerSubmit() {
         try {
-                await register({ ...userData.value });
+                startLoading();
+                await registerUser({ ...userData.value });
                 router.push({ name: 'Feed' });
         } catch (error) {
                 console.error(error);
+        } finally {
+                endLoading();
         }
 }
 </script>
 
 <template>
         <div class="grid place-items-center grid-rows-[1fr] h-[calc(100vh-65px)]">
-                <ContainerComp class="flex flex-col gap-6 max-w-96">
+                <template v-if="!loading">
+                        <ContainerComp class="flex flex-col gap-6 max-w-96">
                         <TitleComp text="Registrarse" />
                         <ContainerComp tag="form" @submit.prevent="handlerSubmit" class="flex-1" action="#">
                                 <ContainerComp class="flex flex-col gap-4 items-center">
@@ -69,10 +77,12 @@ async function handlerSubmit() {
                                 </ContainerComp>
                         </ContainerComp>
 
-                        <ContainerComp tag="p" class="text-xs text-center">
-                                Ya tengo cuenta, <RouterLink to="/login" class="text-blue-700 hover:underline">
-                                        iniciar sesión</RouterLink>
+                        <ContainerComp tag="p" class="text-xs text-center">Ya tengo cuenta, <RouterLink to="/login" class="text-blue-700 hover:underline">iniciar sesión</RouterLink>
                         </ContainerComp>
                 </ContainerComp>
+                </template>
+                <template v-else>
+                        <LoaderComp />
+                </template>
         </div>
 </template>

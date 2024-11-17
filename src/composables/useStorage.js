@@ -1,5 +1,5 @@
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { storage } from '@/services/firebase';
+import { storage } from '@/services/firebase.service';
 
 const useStorage = () => {
 
@@ -24,7 +24,6 @@ const useStorage = () => {
     }
 
     /**
-     * 
      * @param {string} path 
      * @returns 
      */

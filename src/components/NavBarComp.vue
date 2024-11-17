@@ -1,7 +1,6 @@
 <script setup>
 //------------------------------------------------------------------- COMPOSABLES
 import useAuth from '@/composables/useAuth';
-//------------------------------------------------------------------- COMPONENTS
 //------------------------------------------------------------------- VUE COMPOSITION API
 import { RouterLink } from 'vue-router';
 const { user } = useAuth();

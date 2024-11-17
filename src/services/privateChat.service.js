@@ -1,4 +1,4 @@
-import { db } from '@services/firebase';
+import { db } from '@/services/firebase.service';
 import { collection, addDoc, getDocs, query, where, serverTimestamp, limit, orderBy, onSnapshot } from 'firebase/firestore';
 
 const privateChatCollectionRef = collection(db, 'privateChats');

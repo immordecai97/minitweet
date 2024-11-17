@@ -5,6 +5,7 @@ import useLoading from '@/composables/useLoading';
 //------------------------------------------------------------------- COMPONENTS
 import ContainerComp from '@components/ContainerComp.vue';
 import TitleComp from '@/components/TitleComp.vue';
+import LoaderComp from '@/components/skeletons/LoaderComp.vue';
 //------------------------------------------------------------------- VUE COMPOSITION API
 import { ref } from 'vue';
 import { RouterLink, useRouter } from 'vue-router';
@@ -70,7 +71,7 @@ async function handlerSubmit() {
                 </template>
 
                 <template v-else>
-                        <p>Loading</p>
+                        <LoaderComp />
                 </template>
         </div>
 </template>

@@ -9,6 +9,7 @@ const router = createRouter({
   routes: [
     { path: '/',                    name: 'About',            component: AboutView },
     { path: '/feed',                name: 'Feed',             component: () => import('../views/FeedView.vue'),         meta: { requiresAuth: true } },
+    { path: '/post/:id',            name: 'Post',             component: () => import('../views/PostView.vue'),         meta: { requiresAuth: true } },
     { path: '/account/:id',         name: 'Account',          component: () => import('../views/AccountView.vue'),      meta: { requiresAuth: true } },
     { path: '/chat/:id',            name: 'PrivateChat',      component: () => import('../views/PrivateChatView.vue'),  meta: { requiresAuth: true } },
     { path: '/account/edit',        name: 'EditAccount',      component: () => import('../views/EditAccountView.vue'),  meta: { requiresAuth: true } },

@@ -54,9 +54,9 @@ onMounted(async () => {
       <RouterView />
     </ContainerComp>
 
-    <ContainerComp class="fixed bottom-0 left-0 right-0 app-wrapper w-full ">
-      <ContainerComp id="barTop" class="relative mx-auto w-full max-w-96">
-      </ContainerComp>
+    <!-- <ContainerComp class="fixed bottom-0 left-0 right-0 app-wrapper w-full "> -->
+    <ContainerComp class="fixed bottom-0 left-0 right-0 w-full ">
+      <ContainerComp id="barTop" class="relative mx-auto w-full max-w-96"></ContainerComp>
       <NavBar />
     </ContainerComp>
   </div>

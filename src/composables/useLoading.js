@@ -1,5 +1,5 @@
 import { ref } from "vue"
-
+//-> patron de diseño "SINGLETON"
 const useLoading = () => {
     const loading = ref(false);
     const startLoading = () => loading.value = true;
@@ -10,4 +10,5 @@ const useLoading = () => {
         endLoading
     }
 }
+
 export default useLoading
