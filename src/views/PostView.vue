@@ -1,5 +1,4 @@
 <script setup>
-// TODO: Agregar los del tiempo de comentario (cuando fué comentado)
 //------------------------------------------------------------------- COMPOSABLES
 import usePosts from '@composables/usePosts.js';
 import useLoading from '@/composables/useLoading';
@@ -14,6 +13,11 @@ import ContainerComp from '@/components/ContainerComp.vue';
 import TitleComp from '@/components/TitleComp.vue';
 import LoaderComp from '@/components/skeletons/LoaderComp.vue';
 import ModalComp from '@/components/ModalComp.vue';
+import ExpandableText from '@/components/ExpandableText.vue';
+import { formatDistanceToNow } from 'date-fns';
+import { es } from 'date-fns/locale';
+
+//------------------------------------------------------------------- USE COMPOSABLES
 
 const { comments, getCommentsByPostID, saveComment } = useComments();
 const { loading, startLoading, endLoading } = useLoading();
@@ -25,7 +29,8 @@ const route = useRoute();
 const ProfilePhotoDefault = '/perfilPhotoDefault.png';
 const post = ref(null);
 const userFromPost = ref(null);
-const unsubscribe = ref(null);
+const unsubscribeTocomment = ref(null);
+const unsubscribeToPost = ref(null);
 const newComment = ref({
     postID: route.params.id,
     userUID: user.value.uid,
@@ -45,9 +50,16 @@ async function handlerSubmitComment() {
     }
 }
 
+function convertTimestampToDate(timestamp) {
+    return new Date(timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000);
+}
+
 async function handlerSubmitEdit() {
-    await updatePost(post.value.id, { title: 'Hola acabo de esditar', body: 'Este post nuevo' });
-    post.value = await getPostByID(route.params.id);
+    unsubscribeTocomment.value = await updatePost(post.value.id, { ...updatePostData.value }, (postUpdated) => {
+        post.value = postUpdated;
+    });
+    // post.value = await getPostByID(route.params.id);
+    closeModal();
 }
 
 function cancelEdit() {
@@ -61,23 +73,29 @@ function cancelEdit() {
 onMounted(async () => {
     try {
         startLoading();
-        post.value = await getPostByID(route.params.id);
-        unsubscribe.value = await getCommentsByPostID(route.params.id, async (commentsFromDB) => {
-            const commentsWithUser = await Promise.all(commentsFromDB.map(async (comment) => {
-                const userFromComment = await getUserById(comment.userUID);
-                return { ...comment, user: userFromComment };
-            }));
-            comments.value = commentsWithUser;
-        });
-        if (post.value.userUID === user.value.uid) {
-            userFromPost.value = user.value;
-            updatePostData.value = {
-                title: post.value?.title,
-                body: post.value?.body
-            }
-        } else {
-            userFromPost.value = await getUserById(post.value.userUID);
-        }
+        await Promise.all([
+            (async () => {
+                unsubscribeToPost.value = await getPostByID(route.params.id, async (postFromDB) => {
+                    post.value = postFromDB;
+                    userFromPost.value = await getUserById(post.value.userUID);
+                    if (post.value.userUID === user.value.uid) {
+                        updatePostData.value = {
+                            title: post.value?.title,
+                            body: post.value?.body
+                        };
+                    }
+                });
+            })(),
+            (async () => {
+                unsubscribeTocomment.value = await getCommentsByPostID(route.params.id, async (commentsFromDB) => {
+                    const commentsWithUser = await Promise.all(commentsFromDB.map(async (comment) => {
+                        const userFromComment = await getUserById(comment.userUID);
+                        return { ...comment, user: userFromComment };
+                    }));
+                    comments.value = commentsWithUser;
+                });
+            })()
+        ]);
     } catch (error) {
         console.error(error);
     } finally {
@@ -86,75 +104,106 @@ onMounted(async () => {
 });
 
 onBeforeUnmount(() => {
-    if (unsubscribe.value) {
-        unsubscribe.value();
+    if (unsubscribeTocomment.value) {
+        unsubscribeTocomment.value();
+    }
+    if (unsubscribeToPost.value) {
+        unsubscribeToPost.value();
     }
 });
+
 </script>
 
 <template>
-    <div class="grid grid-rows-[1fr] h-[calc(100vh-104px)] overflow-y-auto">
+    <div class="grid grid-rows-[1fr] h-[calc(100vh-104px)] w-full max-w-96">
         <template v-if="!loading">
-            <ContainerComp v-if="post" class="flex flex-col">
+            <ContainerComp v-if="post" class="flex flex-col overflow-y-scroll">
+                <!-- TÍTULO -->
                 <TitleComp text="Post" :stickyTop="true" />
-                <!-- Datos del Post/Publicación -->
-                <div class="min-h-40 border-b border-gray-800 pb-2">
+
+                <!-- DATOS USUARIO Y PUBLICACION/POST -->
+                <ContainerComp v-if="userFromPost"
+                    class="border-b rounded-t-lg bg-zinc-950 border-gray-800 pb-2 w-full max-w-96 sticky top-12">
                     <!-- Usuario -->
-                    <div class="flex gap-2 min-h-16">
+                    <div class="flex gap-2 min-h-16 pl-1 pr-2">
                         <figure class="min-w-16 max-w-16 rounded-full overflow-hidden">
-                            <img :src="userFromPost.photoURL" :alt="userFromPost.name">
+                            <RouterLink :to="{ name: 'Account', params: { id: userFromPost.uid } }">
+                                <img :src="userFromPost.photoURL" :alt="userFromPost.name"
+                                    class="object-cover rounded-full border-4 border-transparent cursor-pointer transition hover:border-blue-700">
+                            </RouterLink>
                         </figure>
-                        <div class="w-full min-h-10">
-                            <div class="flex justify-between items-center w-full pr-2">
-                                <h2 class="min-h-10 flex flex-col"><span class="font-bold">{{ userFromPost.name
-                                        }}</span> <span class="text-gray-400 text-xs">@{{ userFromPost.username
-                                        }}</span></h2>
-                                <button v-if="post.userUID === user.uid" @click="openModal" type="button"
-                                    class="bg-white text-black py-1 px-3 rounded-lg text-xs">Editar</button>
-                            </div>
+                        <div class=" min-h-10 flex justify-between items-center w-full">
+                            <h2 class="min-h-10 flex items-center gap-2">
+                                <RouterLink :to="{ name: 'Account', params: { id: userFromPost.uid } }"
+                                    class="font-bold transition hover:text-blue-700">{{ userFromPost.name }}
+                                </RouterLink>
+                                <RouterLink class="text-gray-400 text-sm transition hover:text-blue-700"
+                                    :to="{ name: 'Account', params: { id: userFromPost.uid } }">@{{
+                                        userFromPost.username
+                                    }}</RouterLink>
+                            </h2>
+                            <button v-if="post.userUID === user.uid" @click="openModal" type="button"
+                                class="bg-white text-black py-1 px-3 rounded-lg text-xs">Editar</button>
                         </div>
                     </div>
                     <!-- Contenido -->
-                    <div class="min-h-[52px] ml-[4.5rem] -mt-5">
-                        <h3 class="font-bold text-lg">{{ post.title }}</h3>
-                        <p>{{ post.body }}</p>
-                    </div>
-                    <!-- Botones -->
-                    <div class="w-full flex justify-center items-center mt-2">
-                        <ul class="flex justify-between w-60">
-                            <li>
-                                <button class="rounded-full bg-gray-900 w-10 h-10">❤</button>
-                            </li>
-                            <li>
-                                <button class="rounded-full bg-gray-900 w-10 h-10">🥩</button>
-                            </li>
-                            <li>
-                                <button class="rounded-full bg-gray-900 w-10 h-10">🍕</button>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+                    <section class="min-h-[52px] ml-[4.5rem] -mt-4">
+                        <h3 v-if="post?.title" class="font-bold text-lg break-words whitespace-normal">{{ post.title }}
+                        </h3>
+                        <ExpandableText :text="post.body" class="w-full mx-w-96" />
+                        <div>
+                            <figure class="w-40 h-40 rounded-lg overflow-hidden" v-if="post?.file">
+                                <img alt="Imagen de la publicación" class="object-cover" :src="post?.file">
+                            </figure>
+                        </div>
+                        <ContainerComp class="flex justify-end">
+                            <p v-if="post?.createdAt" class="text-xs text-gray-500">
+                                {{ formatDistanceToNow(convertTimestampToDate(post.createdAt), {
+                                    addSuffix: true,
+                                    locale: es
+                                }) }}
+                            </p>
+                        </ContainerComp>
+                    </section>
+                </ContainerComp>
+
                 <!-- COMENTARIOS -->
-                <div v-if="comments.length" class="w-full flex">
-                    <ul class="flex-1 w-full pb-1 flex flex-col">
+                <div v-if="comments.length" class="w-full max-w-96 flex">
+                    <ContainerComp tag="ul" class="pb-1 flex flex-col">
                         <!-- COMENTARIO -->
                         <li v-for="comment in comments" :key="comment.id"
-                            class="border-b border-gray-800 pb-2 mt-2 bg-gray-900 bg-opacity-35 rounded-lg pl-4 pr-2 py-2 min-h-[57px]">
+                            class="border-b border-gray-800 pb-2 mt-2 bg-gray-900 bg-opacity-35 rounded-lg pl-4 pr-2 py-2 min-h-[57px] w-full">
                             <!-- Usuario -->
-                            <div class="flex gap-2 min-h-[40px]">
-                                <figure class="min-w-10 max-w-10 rounded-full overflow-hidden">
-                                    <img :src="comment.user.photoURL || ProfilePhotoDefault" :alt="comment.user.name">
+                            <div class="flex gap-2 items-start">
+                                <figure class="min-w-10 max-w-10 min-h-10 rounded-full overflow-hidden">
+                                    <RouterLink :to="{ name: 'Account', params: { id: comment.user.uid } }">
+                                        <img :src="comment.user.photoURL || ProfilePhotoDefault"
+                                            :alt="comment.user.name"
+                                            class="object-cover rounded-full border-2 border-black cursor-pointer transition hover:border-blue-700">
+                                    </RouterLink>
                                 </figure>
-                                <div class="flex justify-between w-full">
-                                    <h2 class=""><span>{{ comment.user.name }}</span> <span
-                                            class="text-gray-400 text-xs">@{{ comment.user.username }}</span></h2>
-                                    <p class="text-xs text-gray-400">hace 2d</p>
-                                </div>
+                                <h2 class="flex-1 break-words whitespace-normal flex gap-1 items-center min-h-6">
+                                    <RouterLink :to="{ name: 'Account', params: { id: comment.user.uid } }"
+                                        class="transition hover:text-blue-700">{{ comment.user.name }}
+                                    </RouterLink>
+                                    <RouterLink :to="{ name: 'Account', params: { id: comment.user.uid } }"
+                                        class="text-gray-400 text-xs transition hover:text-blue-700">@{{
+                                            comment.user.username }}
+                                    </RouterLink>
+                                </h2>
                             </div>
                             <!-- Comentario -->
-                            <p class="ml-12 -mt-4 text-xs">{{ comment.comment }}</p>
+                            <div class="ml-12 -mt-4 flex flex-col">
+                                <ExpandableText :text="comment.comment" class="text-xs" />
+                                <p v-if="comment?.createdAt" class="mt-2 text-xs text-gray-500 self-end">
+                                    {{ formatDistanceToNow(convertTimestampToDate(comment.createdAt), {
+                                        addSuffix: true,
+                                        locale: es
+                                    }) }}
+                                </p>
+                            </div>
                         </li>
-                    </ul>
+                    </ContainerComp>
                 </div>
                 <div v-else class="flex flex-col justify-center items-center">
                     <p class="mt-4 text-gray-400 text-sm">Aún no hay comentarios...</p>
@@ -176,8 +225,10 @@ onBeforeUnmount(() => {
             <label for="comment" class="sr-only">Comentar</label>
             <input v-model="newComment.comment" type="text" id="comment" placeholder="Comentar"
                 class="bg-gray-600 bg-opacity-40 flex h-9 w-full rounded-lg border border-input px-3 py-2 text-sm text-foreground shadow-black/[.04] placeholder:text-muted-foreground/70 focus-visible:border-0 focus-visible:outline-none focus-visible:ring-0  focus-visible:ring-offset-1 -me-px flex-1 rounded-e-none focus-visible:z-10" />
-            <button
-                class="bg-gray-600 bg-opacity-40 inline-flex items-center rounded-e-lg border border-input px-3 text-sm text-foreground hover:bg-accent hover:text-foreground focus:z-10 focus-visible:border-0 focus-visible:outline-none focus-visible:ring-0  focus-visible:ring-offset-1 disabled:text-gray-700 disabled:cursor-not-allowed">Enviar</button>
+            <button :disabled="newComment.comment.length === 0"
+                class="bg-gray-600 bg-opacity-40 inline-flex items-center rounded-e-lg border border-input px-3 text-sm text-foreground hover:bg-accent hover:text-foreground focus:z-10 focus-visible:border-0 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-1 disabled:text-gray-700 disabled:cursor-not-allowed disabled:opacity-50">
+                Enviar
+            </button>
         </form>
     </Teleport>
 
@@ -187,7 +238,7 @@ onBeforeUnmount(() => {
                 <ContainerComp>
                     <label for="title" class="sr-only">Título</label>
                     <input v-model="updatePostData.title" type="title" id="title" name="title" placeholder="Título"
-                        class="custom-input" required>
+                        class="custom-input">
                 </ContainerComp>
 
                 <ContainerComp>

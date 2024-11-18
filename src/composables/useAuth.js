@@ -86,8 +86,11 @@ const useAuth = () => {
      */
     async function getUserById(userId) {
         try {
-            const user = await getProfileUserByUID(userId);
-            return user;
+            if (user.value?.uid === userId) return user.value;
+            else {
+                const user = await getProfileUserByUID(userId);
+                return user;
+            }
         } catch (error) {
             console.error("Error fetching user data: ", error.message);
         }

@@ -24,7 +24,7 @@ function toggleExpand() {
         <p :class="{ 'line-clamp-4': !expanded }" class="break-words whitespace-normal">
             {{ text }}
         </p>
-        <button v-if="text.length > maxLength" @click="toggleExpand" class="text-blue-500 hover:underline">
+        <button v-if="text.length > maxLength" type="button" @click="toggleExpand" class="text-blue-500 hover:underline">
             {{ expanded ? 'Ver menos' : 'Ver más' }}
         </button>
     </div>

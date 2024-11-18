@@ -60,6 +60,19 @@ function cancelProfilePhotoUpload() {
         closeModal();
 }
 
+function handleProfilePhotoUpload(e) {
+        if (isOwnAccount.value) {
+                tempProfilePhotoPreview.value = userProfile.value?.photoURL || defaultPerfilPhoto;
+                const file = e.target.files[0];
+                selectedFile.value = file;
+                const reader = new FileReader();
+                reader.onload = async () => {
+                        tempProfilePhotoPreview.value = reader.result;
+                }
+                reader.readAsDataURL(file);
+        }
+}
+
 // ------------------- COVER PHOTO
 async function saveCoverPhoto() {
         if (isOwnAccount.value && selectedFile.value && tempCoverPhotoPreview.value !== userProfile.value?.coverPhotoURL && tempCoverPhotoPreview.value !== defaultCoverPhoto) {
@@ -91,18 +104,7 @@ function handleCoverPhotoUpload(e) {
         }
 }
 
-function handleProfilePhotoUpload(e) {
-        if (isOwnAccount.value) {
-                tempProfilePhotoPreview.value = userProfile.value?.photoURL || defaultPerfilPhoto;
-                const file = e.target.files[0];
-                selectedFile.value = file;
-                const reader = new FileReader();
-                reader.onload = async () => {
-                        tempProfilePhotoPreview.value = reader.result;
-                }
-                reader.readAsDataURL(file);
-        }
-}
+
 
 
 function handlerContentModal(content = null) {
@@ -277,26 +279,3 @@ watch([() => route.params.id, () => user.value?.photoURL, () => user.value?.cove
                 </template>
         </Modal>
 </template>
-
-
-
-
-<!-- <template>
-        <div class="grid grid-rows-[1fr] h-[calc(100vh-64px)] overflow-y-auto">
-                <div v-if="!loading">
-                        <ContainerComp class="flex-1 flex flex-col">
-                                <ul v-if="userProfile">
-                                        <li>Nombre: {{ userProfile.name }}</li>
-                                        <li>Username: @{{ userProfile.username }}</li>
-                                        <li>Bio: {{ userProfile.bio }}</li>
-                                        <li>Email: {{ userProfile.email }}</li>
-                                </ul>
-                                <p v-else>No se encontró el usuario</p>
-                        </ContainerComp>
-                </div>
-
-                <div v-else>
-                        <AccountSkeleton />
-                </div>
-        </div>
-</template> -->

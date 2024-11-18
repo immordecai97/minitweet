@@ -1,9 +1,10 @@
 import { ref } from 'vue';
 import { getAllPostFromFirestore, createNewPostOnFirestore, getAllPostByUserUIDFromFirestore, getPostByIdFromFirestore, updatePostOnFirestore } from '@/services/post.service';
+import { getFileURL, uploadFile } from '@/services/storage.service';
 
 const usePosts = () => {
     const postsList = ref([]);
-    const unsubscribe = ref(null);
+    // const postsList = []
 
     /**
      * Función para obtener todos los posts de Firestore ordenados por fecha de creación,
@@ -27,6 +28,9 @@ const usePosts = () => {
      */
     async function createNewPost(newPost) {
         try {
+            if(newPost.file){
+                newPost.file = await uploadPostFile(newPost.file, newPost.userUID);
+            }
             await createNewPostOnFirestore(newPost);
         } catch (error) {
             console.error("Error adding document: ", error);
@@ -52,10 +56,10 @@ const usePosts = () => {
      * @param {String} postID 
      * @returns 
      */
-    async function getPostByID(postID) {
+    async function getPostByID(postID, callback) {
         try {
-            const post = await getPostByIdFromFirestore(postID);
-            return post;
+            const unsubscribe = await getPostByIdFromFirestore(postID, callback);
+            return unsubscribe;
         } catch (error) {
             console.error("Error getting document: ", error);
         }
@@ -64,24 +68,38 @@ const usePosts = () => {
     /**
      * Función para actualizar un post por su ID
      * @param {String} postID 
-     * @param {String} updatedPost 
+     * @param {String} newDataPost 
      */
-    async function updatePost(postID, updatedPost) {
+    async function updatePost(postID, newDataPost, callback) {
         try {
-            await updatePostOnFirestore(postID, updatedPost);
+            const unsubscribe = await updatePostOnFirestore(postID, newDataPost, callback);
+            return unsubscribe;
         } catch (error) {
             console.error("Error updating document: ", error);
         }
     }
 
+    /**
+     * Función para subir un archivo al storage
+     * @param {File} file
+     * @param {String} userUID 
+     * @returns {String} fileURL
+     */
+    async function uploadPostFile(file, userUID){
+        const filePath = `posts/${userUID}/postFiles/${file.name}`;
+        await uploadFile(filePath, file);
+        const fileURL = await getFileURL(filePath);
+        return fileURL;
+    }
+
     return {
         postsList,
-        unsubscribe,
         getAllPosts,
         createNewPost,
         getAllPostsByUserUID,
         getPostByID,
         updatePost,
+        uploadPostFile, // todo -> revisar si es necesario retornarla
     };
 };
 

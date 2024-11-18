@@ -63,15 +63,29 @@ export async function getAllPostByUserUIDFromFirestore(userId) {
  * @param {String} postId 
  * @returns {Object} post
  */
-export async function getPostByIdFromFirestore(postId) {
+export async function getPostByIdFromFirestore(postId, callback) {
+    let unsubscribe = null;
     const docRef = doc(postsCollection, postId);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-        return { ...docSnap.data(), id: docSnap.id };
+        unsubscribe = onSnapshot(docRef, (doc) => {
+            const currentData = { ...doc.data(), id: doc.id };
+            callback(currentData);
+        });
+        return unsubscribe;
     } else {
         console.error("No such document!");
     }
 }
+// export async function getPostByIdFromFirestore(postId) {
+//     const docRef = doc(postsCollection, postId);
+//     const docSnap = await getDoc(docRef);
+//     if (docSnap.exists()) {
+//         return { ...docSnap.data(), id: docSnap.id };
+//     } else {
+//         console.error("No such document!");
+//     }
+// }
 
 /**
  * Función para actualizar un post del usuario de Firestore por su ID
@@ -79,10 +93,15 @@ export async function getPostByIdFromFirestore(postId) {
  * @param {Object} data 
  * @returns 
  */
-export async function updatePostOnFirestore(postID, data) {
+export async function updatePostOnFirestore(postID, data, callback) {
     try {
         data.updatedAt = serverTimestamp();
         await updateDoc(doc(postsCollection, postID), data);
+        const unsubscribe = onSnapshot(doc(postsCollection, postID), (doc) => {
+            const currentData = { ...doc.data(), id: doc.id };
+            callback(currentData);
+        });
+        return unsubscribe;
     } catch (error) {
         console.error("Error updating document: ", error);
     }
