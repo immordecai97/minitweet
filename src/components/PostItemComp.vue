@@ -41,8 +41,8 @@ const props = defineProps({
 
 <template>
     <ContainerComp tag="li">
-        <ContainerComp tag="article" class="bg-transparent w-full rounded-t-lg bg-zinc-950 border-b border-gray-800 pb-4 max-w-96">
-            <header class="flex gap-2 items-start">
+        <ContainerComp tag="article" class="bg-transparent w-full rounded-t-lg bg-zinc-950 border-b border-gray-800 pb-4 max-w-96 pt-2">
+            <header class="flex gap-2 items-start pl-2">
                 <figure class="w-10 h-10" v-if="post.userUID">
                     <router-link :to="{ name: 'Account', params: { id: post.userUID } }">
                         <img :alt="userFromPost?.name"
@@ -62,7 +62,7 @@ const props = defineProps({
                 </h2>
             </header>
             <RouterLink :to="{ name: 'Post', params: { id: post?.id } }">
-                <section class="pl-12 -mt-5">
+                <section class="pl-12 -mt-5 pr-2">
                     <h3 v-if="post?.title" class="font-bold break-words whitespace-normal">{{ post.title }}</h3>
                     <ExpandableText :text="post.body" />
                     <div>

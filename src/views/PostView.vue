@@ -172,7 +172,7 @@ onBeforeUnmount(() => {
                     <ContainerComp tag="ul" class="pb-1 flex flex-col">
                         <!-- COMENTARIO -->
                         <li v-for="comment in comments" :key="comment.id"
-                            class="border-b border-gray-800 pb-2 mt-2 bg-gray-900 bg-opacity-35 rounded-lg pl-4 pr-2 py-2 min-h-[57px] w-full">
+                            class="border-b border-gray-800 pb-2 mt-2 bg-gray-900 bg-opacity-35 rounded-lg pl-4 py-2 min-h-[57px] w-full">
                             <!-- Usuario -->
                             <div class="flex gap-2 items-start">
                                 <figure class="min-w-10 max-w-10 min-h-10 rounded-full overflow-hidden">
