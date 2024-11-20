@@ -12,7 +12,7 @@ defineProps({
 </script>
 
 <template>
-	<ul v-if="posts && posts.length" class="w-full flex flex-col gap-2 max-w-96">
+	<ul v-if="posts && posts.length" class="w-full flex flex-col gap-2 max-w-96 pb-[4.5rem]">
 			<li v-for="post in posts" :key="post.id">
 				<PostItem :post="post" />
 			</li>
