@@ -1,13 +1,16 @@
-import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+//------------------------------------------------------------------- FIREBASE CONFIG
 import { storage } from '@/services/firebase.service';
+//------------------------------------------------------------------- FIREBASE SERVICES
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+//------------------------------------------------------------------- FUNCIONES
 /**
  * Función que sube un archivo al storage
  * @param {string} path 
  * @param {File} file 
  */
 export const uploadFile = async (path, file) => {
-    const storageRef = ref(storage, path); // Referencia al archivo en el storage
-    await uploadBytes(storageRef, file); // Subir el archivo (representado como objeto File o Blob) al storage
+	const storageRef = ref(storage, path); // Referencia al archivo en el storage
+	await uploadBytes(storageRef, file); // Subir el archivo (representado como objeto File o Blob) al storage
 }
 
 /**
@@ -16,8 +19,8 @@ export const uploadFile = async (path, file) => {
  * @returns {Promise<string>} URL del archivo
  */
 export const getFileURL = async (file) => {
-    const storageRef = ref(storage, file); // Referencia al archivo en el storage
-    return await getDownloadURL(storageRef); // Obtener la URL del archivo
+	const storageRef = ref(storage, file); // Referencia al archivo en el storage
+	return await getDownloadURL(storageRef); // Obtener la URL del archivo
 }
 
 /**
@@ -25,6 +28,6 @@ export const getFileURL = async (file) => {
  * @returns 
  */
 export const deleteFile = async (path) => {
-    const storageRef = ref(storage, path); // Referencia al archivo en el storage
-    return await deleteObject(storageRef); // Borrar el archivo
+	const storageRef = ref(storage, path); // Referencia al archivo en el storage
+	return await deleteObject(storageRef); // Borrar el archivo
 }

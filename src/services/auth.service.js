@@ -1,18 +1,20 @@
+//------------------------------------------------------------------- FIREBASE CONFIG
 import { auth } from '@/services/firebase.service';
+//------------------------------------------------------------------- FIREBASE SERVICES
 import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
-
+//------------------------------------------------------------------- FUNCIONES
 /**
  * Funcion para registrar un nuevo usuario
  * @param {{email: String, password: String}} param0 
  * @returns Promise<{userCredential}>
  */
 export async function authRegister({ email, password }) {
-    try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        return userCredential;
-    } catch (error) {
-        console.error("Error registering: ", error.message);
-    }
+	try {
+		const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+		return userCredential;
+	} catch (error) {
+		console.error("Error registering: ", error.message);
+	}
 }
 
 /**
@@ -21,12 +23,12 @@ export async function authRegister({ email, password }) {
  * @returns Promise<{userCredential}>
  */
 export async function authlogin({ email, password }) {
-    try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        return userCredential;
-    } catch (error) {
-        console.error("Error logging in: ", error.message);
-    }
+	try {
+		const userCredential = await signInWithEmailAndPassword(auth, email, password);
+		return userCredential;
+	} catch (error) {
+		console.error("Error logging in: ", error.message);
+	}
 }
 
 /**
@@ -34,11 +36,11 @@ export async function authlogin({ email, password }) {
  * @returns Promise<void>
  */
 export async function authLogout() {
-    try {
-        await signOut(auth);
-    } catch (error) {
-        console.error("Error logging out: ", error.message);
-    }
+	try {
+		await signOut(auth);
+	} catch (error) {
+		console.error("Error logging out: ", error.message);
+	}
 }
 
 
@@ -48,10 +50,10 @@ export async function authLogout() {
  */
 //? NOTA: Esta es la opción 1 de como se puede usar onAuthStateChanged de manera asincrona con callbacks
 export async function authState(callback) {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-        callback(user);
-        unsubscribe();
-    });
+	const unsubscribe = onAuthStateChanged(auth, (user) => {
+		callback(user);
+		unsubscribe();
+	});
 }
 //? NOTA: Esta es la opción 2 de como se puede usar onAuthStateChanged de manera asincrona con promesas
 // export async function authState() {

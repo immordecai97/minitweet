@@ -1,20 +1,23 @@
 <script setup>
+//------------------------------------------------------------------- COMPONENTS
 import ContainerComp from './ContainerComp.vue';
 import PostItem from './PostItemComp.vue';
-
+//------------------------------------------------------------------- PROPS
 defineProps({
-    posts: {
-        type: Array,
-        required: true
-    }
+	posts: {
+		type: Array,
+		required: true
+	}
 })
 </script>
 
 <template>
-    <ContainerComp tag="ul" v-if="posts && posts.length" class="flex-1 flex flex-col gap-4 pb-12">
-        <PostItem v-for="post in posts" :key="post.id" :post="post" />
-    </ContainerComp>
-    <ContainerComp v-else class="text-center text-gray-400 text-opacity-50 my-24">
-        Aún no hay publicaciones...
-    </ContainerComp>
+	<ul v-if="posts && posts.length" class="w-full flex flex-col gap-2 max-w-96">
+			<li v-for="post in posts" :key="post.id">
+				<PostItem :post="post" />
+			</li>
+	</ul>
+	<ContainerComp v-else class="text-center text-gray-400 text-opacity-50 my-24">
+		<span>Aún no hay publicaciones...</span>
+	</ContainerComp>
 </template>
