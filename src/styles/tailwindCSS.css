@@ -81,3 +81,7 @@ input:-ms-autofill {
 .fullHeight {
         height: calc(var(--vh, 1vh) * 100);
 }
+
+#btnInstall {
+        @apply w-full transition-all bg-white text-black rounded-lg py-2 px-4 border border-transparent hover:bg-black hover:text-white hover:border-white;
+}

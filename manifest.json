@@ -1,0 +1,17 @@
+{
+        "lang": "es",
+        "name": "Minitweet",
+        "short_name": "MTW",
+        "theme_color": "#000",
+        "display": "fullscreen",
+        "start_url": "/index.html",
+        "background_color": "#000",
+        "description": "Minitweet es una aplicación web que te permite enviar tweets de manera rápida y sencilla.",
+        "icons": [
+                {
+                        "src": "/minitweet.png",
+                        "sizes": "128x96",
+                        "type": "image/png"
+                }
+        ]
+}

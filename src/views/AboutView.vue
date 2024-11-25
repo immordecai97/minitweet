@@ -2,6 +2,7 @@
 //------------------------------------------------------------------- COMPONENTS
 import ContainerComp from '@components/ContainerComp.vue';
 import TitleComp from '@/components/TitleComp.vue';
+import InstallButton from '@/components/InstallButton.vue';
 //------------------------------------------------------------------- VUE ROUTER
 import { RouterLink } from 'vue-router';
 </script>
@@ -19,8 +20,12 @@ import { RouterLink } from 'vue-router';
 					class="text-pretty" />
 			</ContainerComp>
 			<ContainerComp tag="section" class="flex flex-col gap-4">
-				<ContainerComp tag="h2" text="Modo en línea" class="font-bold text-center text-xl text-orange-400 text-pretty" />
+				<ContainerComp tag="h2" text="Modo en línea"
+					class="font-bold text-center text-xl text-orange-400 text-pretty" />
 				<!-- <a target="_blank" href="https://minitweet.netlify.app/" class="text-center text-blue-700 hover:underline">Visita la app en línea</a> -->
+			</ContainerComp>
+			<ContainerComp tag="section" class="flex flex-col gap-4 items-center justify-center">
+				<InstallButton />
 			</ContainerComp>
 		</ContainerComp>
 
@@ -31,7 +36,8 @@ import { RouterLink } from 'vue-router';
 					<details class="bg-stone-900 p-2 rounded-md">
 						<summary class="font-bold">Simplicidad:</summary>
 						<p class="text-pretty max-w-64 text-center mx-auto">
-							Disfruta de una experiencia limpia y directa, perfecta para los que valoran la comunicación rápida.
+							Disfruta de una experiencia limpia y directa, perfecta para los
+							que valoran la comunicación rápida.
 						</p>
 					</details>
 				</li>
@@ -47,22 +53,26 @@ import { RouterLink } from 'vue-router';
 					<details class="bg-stone-900 p-2 rounded-md">
 						<summary class="font-bold">Diversión:</summary>
 						<p class="text-pretty max-w-64 text-center mx-auto">
-							Desde memes hasta pensamientos profundos, aquí hay espacio para todo.
+							Desde memes hasta pensamientos profundos, aquí hay espacio para
+							todo.
 						</p>
 					</details>
 				</li>
 			</ul>
 		</ContainerComp>
 		<ContainerComp tag="section" class="flex flex-col gap-4">
-			<ContainerComp tag="h2" text="¿Listo para unirte a la conversación?" class="font-bold text-center text-xl" />
+			<ContainerComp tag="h2" text="¿Listo para unirte a la conversación?"
+				class="font-bold text-center text-xl" />
 			<p class="text-pretty text-center">
 				Inicia sesión o regístrate ahora y sé parte de la revolución del microcontenido.
 			</p>
 			<ContainerComp class="w-full flex flex-col gap-4 items-center">
-				<RouterLink to="/login" class="transition bg-slate-50 text-black font-bold py-2 px-4 rounded-lg w-full max-w-96 text-center border border-transparent hover:bg-black hover:text-white hover:border-white">
+				<RouterLink to="/login"
+					class="transition bg-slate-50 text-black font-bold py-2 px-4 rounded-lg w-full max-w-96 text-center border border-transparent hover:bg-black hover:text-white hover:border-white">
 					Iniciar sesión
 				</RouterLink>
-				<RouterLink to="/signup" class="transition bg-slate-50 text-black font-bold py-2 px-4 rounded-lg w-full max-w-96 text-center border border-transparent hover:bg-black hover:text-white hover:border-white">
+				<RouterLink to="/signup"
+					class="transition bg-slate-50 text-black font-bold py-2 px-4 rounded-lg w-full max-w-96 text-center border border-transparent hover:bg-black hover:text-white hover:border-white">
 					Registrarse
 				</RouterLink>
 			</ContainerComp>

@@ -21,7 +21,7 @@ import PostItemComp from '@/components/PostItemComp.vue';
 const route = useRoute();
 const { user, getUserById } = useAuth();
 const { getPostByID, updatePost } = usePosts();
-const { modal, openModal, closeModal } = useModal(); // TODO: ESTA MODAL ES PARA EDITAR EL POST
+const { modal, closeModal } = useModal(); // TODO: ESTA MODAL ES PARA EDITAR EL POST
 const { loading, startLoading, endLoading } = useLoading();
 const { comments, getCommentsByPostID, saveComment } = useComments();
 //------------------------------------------------------------------- VARIABLES
