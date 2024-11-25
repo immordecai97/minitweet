@@ -3,13 +3,21 @@ const cacheName = 'v1';
 
 // Declaramos un array con los recursos que queremos cachear
 const urlsToCache = [
-        '/',
         '/index.html',
         '/manifest.json',
         '/minitweet.svg',
         '/favicon.svg',
-        '/minitweet.png',
         '/styles/tailwindCSS.css',
+        '/ico_minitweet_48x48.png',
+        '/ico_minitweet_72x72.png',
+        '/ico_minitweet_96x96.png',
+        '/ico_minitweet_128x128.png',
+        '/ico_minitweet_144x144.png',
+        '/ico_minitweet_152x152.png',
+        '/ico_minitweet_192x192.png',
+        '/ico_minitweet_256x256.png',
+        '/ico_minitweet_384x384.png',
+        '/ico_minitweet_512x512.png'
 ];
 
 /**
