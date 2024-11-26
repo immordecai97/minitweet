@@ -135,18 +135,17 @@ function handlerContentModal(content = null) {
  * Tambien resuelve y asigna el perfil del usuario.
  * @param {String} uid
  */
-async function checkUserProfile(uid) {
+ async function checkUserProfile(uid) {
 	try {
 		startLoading();
-		if (user.value?.uid === uid) {
-			userProfile.value = user.value;
-			isOwnAccount.value = true;
-		} else {
-			isOwnAccount.value = false;
-			userProfile.value = await getUserById(uid);
+		if(user.value) {
+			const userFound = await getUserById(uid);
+			if (userFound) {
+				userProfile.value = userFound;
+				isOwnAccount.value = user.value.uid === userProfile.value.uid;
+				postFromUser.value = await getAllPostsByUserUID(uid);
+			}
 		}
-		postFromUser.value = await getAllPostsByUserUID(uid); // no borrar el await -> funciona solo typescript no lo reconoce
-
 	} catch (error) {
 		console.log(error);
 	} finally {
