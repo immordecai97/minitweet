@@ -1,105 +1,66 @@
-// Declaramos el nombre de la cache
-const cacheName = 'v1';
+const CACHE_STATIC_NAME = 'static-v1';
+const CACHE_DYNAMIC_NAME = 'dynamic-v1';
 
-// Declaramos un array con los recursos que queremos cachear
 const urlsToCache = [
-        '/index.html',
-        '/manifest.json',
-        '/minitweet.svg',
-        '/favicon.svg',
-        '/styles/tailwindCSS.css',
-        '/ico_minitweet_48x48.png',
-        '/ico_minitweet_72x72.png',
-        '/ico_minitweet_96x96.png',
-        '/ico_minitweet_128x128.png',
-        '/ico_minitweet_144x144.png',
-        '/ico_minitweet_152x152.png',
-        '/ico_minitweet_192x192.png',
-        '/ico_minitweet_256x256.png',
-        '/ico_minitweet_384x384.png',
-        '/ico_minitweet_512x512.png'
+	'/index.html',
+	'/manifest.json',
+	'/minitweet.svg',
+	'/favicon.svg',
+	'/styles/tailwindCSS.css',
+	...[48, 72, 96, 128, 144, 152, 192, 256, 384, 512].map(size => `/ico_minitweet_${size}x${size}.png`),
 ];
 
-/**
- * Evento 'install'
- * Se ejecuta cuando el Service Worker se instala por primera vez en el navegador
- * Se encarga de cachear los recursos estáticos declarados en 'urlsToCache'.
- * Son los recursos que necesitamos para que la aplicación funcione offline.
- */
 self.addEventListener('install', (e) => {
-        // Esperamos a que se termine de cachear los recursos
-        e.waitUntil(
-                // Abrimos la cache con el nombre declarado
-                caches.open(cacheName)
-                        // Una vez abierta la cache, añadimos los recursos
-                        .then((cache) => {
-                                console.log('Cacheado');
-                                return cache.addAll(urlsToCache);
-                        })
-        )
-})
+	self.skipWaiting();
+	e.waitUntil(
+		caches.open(CACHE_STATIC_NAME)
+			.then((cache) => {
+				return cache.addAll(urlsToCache);
+			})
+	)
+	// console.log('Cacheado los recursos estaticos');
+});
 
-/**
- * Evento 'Activate'
- * Se ejecuta cuando el Service Worker se activa por primera vez en el navegador
- * Se encarga de borrar las caches antiguas que ya no necesitamos y que no coincidan con el nombre de la cache actual.
- * Es importante borrar las caches antiguas para liberar espacio en el navegador.
- */
 self.addEventListener('activate', (e) => {
-        // Esperamos a que se termine de borrar las caches antiguas
-        e.waitUntil(
-                // Obtenemos todas las caches
-                caches.keys().then((cacheNames) => {
-                        // Recorremos todas las caches
-                        return Promise.all(
-                                // Filtramos las caches que no coincidan con el nombre de la cache actual
-                                cacheNames.map((cache) => {
-                                        // Si la cache no coincide, la borramos
-                                        if (cache !== cacheName) {
-                                                return caches.delete(cache);
-                                        }
-                                })
-                        )
-                })
-        )
+	e.waitUntil(
+		caches.keys().then((cacheNames) => {
+			return Promise.all(cacheNames.map((cacheName) => {
+				if (cacheName !== CACHE_STATIC_NAME && cacheName !== CACHE_DYNAMIC_NAME) {
+					// console.log('Borrando cache antiguo', cacheName);
+					return caches.delete(cacheName);
+				}
+				// console.log('No se borra cache', cacheName);
+			}));
+		})
+	)
 });
 
-/**
- * Evento 'fetch'
- * Se ejecuta cada vez que la aplicación hace una petición a un recurso.
- * Se encarga de interceptar la petición y responder con el recurso de la cache si existe.
- * Si el recurso no existe en la cache, hace la petición a la red y devuelve el recurso.
- * De esta forma, si el usuario no tiene conexión a internet, la aplicación sigue funcionando con los recursos cacheados.
- */
 self.addEventListener('fetch', (e) => {
-        // Respondemos con la cache o con la petición
-        e.respondWith(
-                // Buscamos en la cache si existe el recurso
-                caches.match(e.request)
-                        .then((res) => {
-                                // Si existe el recurso en la cache, lo devolvemos
-                                if (res) {
-                                        return res;
-                                }
-                                // Si no existe el recurso en la cache, hacemos la petición a la red
-                                return fetch(e.request);
-                        })
-        );
+	e.respondWith(
+		fetch(e.request).then((networkResponse) => {
+			return caches.open(CACHE_DYNAMIC_NAME)
+				.then((cache) => {
+					/**
+					 * .put()
+					 * El método put pertenece al objeto Cache y se utiliza para almacenar una respuesta en la caché.
+					 * Toma dos argumentos:
+					 * Request: La solicitud que se está almacenando.
+					 * Response: La respuesta que se está almacenando.
+					 * @param {Request} request
+					 * @param {Response} response
+					 */
+					/**
+					 * .clone()
+					 * El método clone pertenece al objeto Response y se utiliza para crear una copia de la respuesta.
+					 * Esto es necesario porque las respuestas son "streams" (en español streams se puede entender como flujos) y solo se pueden consumir una vez.
+					 * Al clonar la respuesta, puedes usar una copia para almacenar en la caché y otra para devolver al navegador.
+					 */
+					cache.put(e.request, networkResponse.clone());
+					return networkResponse;
+				})
+		}).catch((error) => {
+			// console.log("Sin conexion, recuperando cache...");
+			return caches.match(e.request);
+		})
+	);
 });
-
-// Que viene despues de esto? -> Registrar el Service Worker en el archivo index.html o en el archivo de entrada de la aplicación, por ejemplo main.js
-// Para registrar el Service Worker, se utiliza el método 'register' del objeto 'navigator.serviceWorker' que nos proporciona el navegador.
-// codigo:
-/**
- * if ('serviceWorker' in navigator) {
- * window.addEventListener('load', () => {
- *   navigator.serviceWorker.register('/service-worker.js')
- *    .then(registration => {
- *       console.log('ServiceWorker registrado con éxito:', registration);
- *     })
- *     .catch(error => {
- *       console.log('Error en el registro del ServiceWorker:', error);
- *     });
- * });
- * }
- */
